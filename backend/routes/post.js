@@ -11,4 +11,13 @@ router.post('/add', async (req, res) => {
         res.status(400).send(error)
     }
 })
+router.put('/update', async (req, res) => {
+    try {
+        let { userId, data, liked, commented } = req.body;
+        let post = await Post.update({ userId }, { $set: { data, liked, commented } });
+        res.json(post)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
 module.exports = router;

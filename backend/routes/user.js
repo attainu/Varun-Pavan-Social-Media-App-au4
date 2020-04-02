@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router();
 const User = require('./../models/user')
+const jwt = require('jsonwebtoken')
 //sign UP
-router.post('/add', async (req, res) => {
+router.post('/signup', async (req, res) => {
     try {
         let { name, email, phone, password, gender, location, bio } = req.body;
         let user = await User.create({ name, email, phone, password, gender, location, bio });
@@ -11,18 +12,21 @@ router.post('/add', async (req, res) => {
             data: user
         })
     } catch (error) {
-        res.send(error)
+        res.status(400).send(error)
+
     }
 })
 // login
-router.get('/one', async (req, res) => {
+router.get('/login', async (req, res) => {
     try {
         let { email, password } = req.body;
         let user = await User.findOne({ email, password });
         if (user) {
-            res.json({
+            const token = jwt.sign({ _id: user._id }, 'secretkey')
+            res.header('auth-token', token).json({
                 status: true,
-                data: user
+                data: user,
+                token
             })
         } else {
             res.json({
@@ -31,7 +35,7 @@ router.get('/one', async (req, res) => {
             })
         }
     } catch (error) {
-        res.send(error)
+        res.status(400).send(error)
     }
 })
 module.exports = router;
