@@ -4,7 +4,8 @@ const port = 3010;
 require('./database/mongo')
 app.use(express.json())
 app.use(express.urlencoded());
-app.use("/", require("./routes/user"));
+app.use("/users", require("./routes/user"));
+app.use("/posts", require("./routes/post"));
 app.get('/', (req, res) => {
     res.json({
         data: req.body
