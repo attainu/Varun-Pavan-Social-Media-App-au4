@@ -22,3 +22,14 @@ exports.updatePost = catchAsync(async (req, res, next) => {
     }
   });
 });
+
+exports.deletePost = catchAsync(async (req, res, next) => {
+  let { _id } = req.body;
+  let post = await Post.deleteOne({ _id });
+  res.status(201).json({
+    status: 'success',
+    data: {
+      tour: post
+    }
+  });
+});

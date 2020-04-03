@@ -6,6 +6,7 @@ router
     .route('/')
     .post(postController.createPost)
     .put(postController.updatePost)
+    .delete(postController.deletePost)
 
 
 module.exports = router;
