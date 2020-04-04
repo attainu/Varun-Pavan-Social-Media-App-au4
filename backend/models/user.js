@@ -37,13 +37,13 @@ const User = mongoose.model('users', {
         type: String,
     },
     following: {
-        type: Array,
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
     },
     followers: {
-        type: Array,
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
     },
     posts: {
-        type: Array, //Contains ids of persons who liked post.
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'posts' }],
     },
     likedPosts: {
         type: Array,

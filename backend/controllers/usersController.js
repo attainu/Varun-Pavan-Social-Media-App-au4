@@ -2,6 +2,14 @@ const User = require('./../models/user');
 const jwt = require('jsonwebtoken')
 const catchAsync = require('./../utils/catchAsync');
 const bcryptjs = require('bcryptjs')
+const AppError = require('./../utils/appError');
+
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  let user = await User.find({});
+  res.json({
+    data: user
+  })
+});
 
 exports.createUser = catchAsync(async (req, res, next) => {
   let { name, email, phone, password, gender, location, bio } = req.body;
@@ -31,9 +39,52 @@ exports.loginUser = catchAsync(async (req, res, next) => {
       token
     });
   } else {
-    res.json({
-      status: false,
-      message: "User not found"
-    });
+    return next(new AppError('There is no user with email address.', 404));
   }
+});
+
+
+exports.addFollowerFollowing = catchAsync(async (req, res, next) => {
+  let { id1, id2 } = req.params;
+
+  const user = await User.findOne({ _id: id1 });
+  if (user.following.includes(id2)) {
+    return res.json({ message: `You are already following him.` });
+  }
+  user.following.push(id2);
+  const savedUser = await user.save();
+
+  const userFollower = await User.findOne({ _id: id2 });
+  userFollower.followers.push(id1);
+  const savedFollower = await userFollower.save();
+
+  res.json({
+    data: savedUser,
+    data2: savedFollower
+  });
+
+});
+
+exports.getAllFollowers = catchAsync(async (req, res, next) => {
+  let { id } = req.params;
+  const followers = await User.findOne({ _id: id }).populate('followers', 'name');
+  res.json({
+    data: followers
+  })
+});
+
+exports.getAllFollowing = catchAsync(async (req, res, next) => {
+  let { id } = req.params;
+  const following = await User.findOne({ _id: id }).populate('following', 'name');
+  res.json({
+    data: following
+  });
+});
+
+exports.getAllPosts = catchAsync(async (req, res, next) => {
+  let { id } = req.params;
+  const posts = await User.findOne({ _id: id }).populate('posts');
+  res.json({
+    data: posts
+  })
 });

@@ -1,13 +1,15 @@
 const mongoose = require('mongoose');
 const Post = mongoose.model('posts', {
-    userId: {
-        type: String
+    dataType: {
+        type: String,
+        enum: ['image', 'text', 'image-text']
     },
     data: {
         type: String
     },
     liked: {
-        type: Array
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
+        default: []
     },
     commented: {
         type: Array
