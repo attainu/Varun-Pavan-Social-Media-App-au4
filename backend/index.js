@@ -27,6 +27,7 @@ require('./database/mongo');
 
 app.use("/users", require("./routes/user"));
 app.use("/posts", require("./routes/post"));
+app.use("/comments", require("./routes/comment"));
 
 app.get('/', (req, res) => {
     res.json({

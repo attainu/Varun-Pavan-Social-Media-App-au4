@@ -11,6 +11,10 @@ const Post = mongoose.model('posts', {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
         default: []
     },
+    comments: {
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'comments' }],
+        default: []
+    },
     commented: {
         type: Array
     }
