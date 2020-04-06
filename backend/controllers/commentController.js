@@ -34,7 +34,7 @@ exports.deleteComment = catchAsync(async (req, res, next) => {
     let { _id, postId } = req.body;
     let comment = await Comment.deleteOne({ _id });
     let post = await Post.findOne({ _id: postId });
-    post.comment.splice(comment.indexOf(_id), 1)
+    post.comment.splice(comment.indexOf(_id), 1);
     let postSaved = await post.save();
     res.status(201).json({
         status: 'success',

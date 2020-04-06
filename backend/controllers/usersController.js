@@ -4,12 +4,22 @@ const catchAsync = require('./../utils/catchAsync');
 const bcryptjs = require('bcryptjs')
 const AppError = require('./../utils/appError');
 
+/***
+ * Function Purpose - To get all users
+ * URL - /users
+ * ***/
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   let user = await User.find({});
   res.json({
     data: user
   })
 });
+
+/***
+ * Function Purpose - Create a new user and save in the database
+ * URL - /users/signup
+ * req.body - { name, email, phone, password, gender, location }
+ * ***/
 
 exports.createUser = catchAsync(async (req, res, next) => {
   let { name, email, phone, password, gender, location, bio } = req.body;
@@ -24,6 +34,12 @@ exports.createUser = catchAsync(async (req, res, next) => {
     data: user
   });
 });
+
+/***
+ * Function Purpose - Login user if the user already signedUp
+ * URL - /users
+ * req.body - { email, password }
+ * ***/
 
 exports.loginUser = catchAsync(async (req, res, next) => {
   let { email, password } = req.body;
@@ -43,7 +59,10 @@ exports.loginUser = catchAsync(async (req, res, next) => {
   }
 });
 
-
+/***
+ * Fucntion Purpose - When a user clicks on follow button, then respective users followers and following are updated
+ * URL - /users/:id1/:id2 - /users/{User who is logged in}/{ID of following users}
+ * ***/
 exports.addFollowerFollowing = catchAsync(async (req, res, next) => {
   let { id1, id2 } = req.params;
 
@@ -65,6 +84,11 @@ exports.addFollowerFollowing = catchAsync(async (req, res, next) => {
 
 });
 
+
+/***
+ * Function Purpose - Get all followers of a user
+ * URL - users/:id1 - users/{ ID of logged in user} 
+ * ***/
 exports.getAllFollowers = catchAsync(async (req, res, next) => {
   let { id } = req.params;
   const followers = await User.findOne({ _id: id }).populate('followers', 'name');
@@ -73,6 +97,10 @@ exports.getAllFollowers = catchAsync(async (req, res, next) => {
   })
 });
 
+/***
+ * Function Purpose - Get the list of following users
+ * URL - users/:id1 - users/{ ID of logged in user} 
+ * ***/
 exports.getAllFollowing = catchAsync(async (req, res, next) => {
   let { id } = req.params;
   const following = await User.findOne({ _id: id }).populate('following', 'name');
@@ -81,10 +109,51 @@ exports.getAllFollowing = catchAsync(async (req, res, next) => {
   });
 });
 
+
+/***
+ * Function Purpose - Get all posts of loged in user
+ * URL - users/:id1 - users/{ ID of logged in user}
+ * ***/
 exports.getAllPosts = catchAsync(async (req, res, next) => {
   let { id } = req.params;
   const posts = await User.findOne({ _id: id }).populate('posts');
   res.json({
     data: posts
+  })
+});
+
+/***
+ *  Function Purpose - When a user clicks on unfollow this function runs
+ *  URL - /users/unfollow/:id1/:id2
+ * ***/
+exports.removeFollowerFollowing = catchAsync(async (req, res, next) => {
+  let { id1, id2 } = req.params;
+
+  const removeFollowing = await User.findOne({ _id: id1 });
+  let index = removeFollowing.following.indexOf(id2)
+  if (index === -1) {
+    res.status(204).json({
+      message: `Error! You aren't following this person.`
+    });
+  } else
+    removeFollowing.following.splice(index, 1);
+  const saveUser = await removeFollowing.save();
+
+  const removeFollower = await User.findOne({ _id: id2 });
+  index = removeFollower.followers.indexOf(id1);
+  if (index === -1) {
+    res.status(204).json({
+      message: `Error! While updaing followers`
+    });
+  } else
+    removeFollower.followers.splice(index, 1);
+  const saveUserFollower = await removeFollower.save();
+
+  res.status(201).json({
+    message: `Followers and following count is updated accordingly.`,
+    data: {
+      following: saveUser,
+      follower: saveUserFollower
+    }
   })
 });

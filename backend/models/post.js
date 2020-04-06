@@ -5,7 +5,17 @@ const Post = mongoose.model('posts', {
         enum: ['image', 'text', 'image-text']
     },
     data: {
-        type: String
+        type: String,
+        trim: true
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
+    },
+    dateCreated: {
+        type: Date,
+        default: Date.now
     },
     liked: {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
@@ -16,7 +26,8 @@ const Post = mongoose.model('posts', {
         default: []
     },
     commented: {
-        type: Array
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'comments' }],
+        default: []
     }
-})
+});
 module.exports = Post;

@@ -9,7 +9,9 @@ router
 
 router
     .route('/:id')
-    .post(postController.createPost)
+    .post(postController.createPost);
+
+router.get('/sortedPosts/:id', postController.sortedPosts);
 
 
 module.exports = router;
