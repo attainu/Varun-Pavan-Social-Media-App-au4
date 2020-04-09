@@ -2,12 +2,14 @@ const express = require('express');
 const app = express();
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
+// const xss = require('xss-clean');
+const cors = require('cors');
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require('./controllers/errorController');
 const port = 3010;
 
+app.use(cors())
 // Set security HTTP headers
 app.use(helmet());
 
@@ -19,7 +21,7 @@ app.use(express.urlencoded());
 app.use(mongoSanitize());
 
 // Data sanitization against XSS
-app.use(xss());
+// app.use(xss());
 
 const auth = require('./routes/verify');
 require('./database/mongo');

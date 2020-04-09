@@ -15,6 +15,12 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   })
 });
 
+exports.getOneUser = catchAsync(async (req, res, next) => {
+  let user = await User.findOne({ email: req.body.email });
+  if (user) return res.json(true)
+  return res.json(false)
+});
+
 /***
  * Function Purpose - Create a new user and save in the database
  * URL - /users/signup
@@ -55,7 +61,8 @@ exports.loginUser = catchAsync(async (req, res, next) => {
       token
     });
   } else {
-    return next(new AppError('There is no user with email address.', 404));
+    // return next(new AppError('There is no user with email address.', 404));
+    res.json({ status: false })
   }
 });
 

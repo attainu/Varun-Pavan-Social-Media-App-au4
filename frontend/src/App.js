@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Link, Route, Redirect, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
+import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 
@@ -11,7 +12,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="#">
+      <Link color="inherit" href="/">
         Social Media
       </Link>{' '}
       {new Date().getFullYear()}

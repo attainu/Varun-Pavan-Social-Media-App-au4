@@ -1,0 +1,6 @@
+.login{
+    border: black solid 1px 1px 0px 0px;
+    -webkit-box-shadow: -11px 7px 5px 0px rgba(222,213,222,0.75);
+-moz-box-shadow: -11px 7px 5px 0px rgba(222,213,222,0.75);
+box-shadow: -11px 7px 5px 0px rgba(222,213,222,0.75)
+}
