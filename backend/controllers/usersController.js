@@ -15,6 +15,19 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   })
 });
 
+/***
+ * Function Purpose - To get a specific users
+ * URL - /user/:id - id of a user
+ * ***/
+exports.getUser = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  console.log(id);
+  let user = await User.findOne({ _id: id });
+  res.status(201).json({
+    data: user
+  })
+});
+
 exports.getOneUser = catchAsync(async (req, res, next) => {
   let user = await User.findOne({ email: req.body.email });
   if (user) return res.json(true)
