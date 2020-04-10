@@ -63,7 +63,7 @@ export default function SignUp() {
         setOpen(false);
     }
     let nameValidation = name.length < 3;
-    let emailValidation = !/[@]/.test(email) || email.length < 6;
+    let emailValidation = !/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email) || email.length < 6;
     let passwordValidation = !/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/.test(password);
     let cpasswordValidation = password === cpassword;
     let disable = !nameValidation && !emailValidation && !passwordValidation && cpasswordValidation;

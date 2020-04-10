@@ -7,10 +7,11 @@ import Typography from '@material-ui/core/Typography';
 import './App.css';
 import Login from './components/login'
 import SignUp from './components/signup'
+import UserProfile from './components/profile'
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
+    <Typography variant="body2" color="white" align="center">
       {'Copyright © '}
       <Link color="inherit" href="/">
         Social Media
@@ -29,6 +30,7 @@ class App extends Component {
         <div className="App">
           <header className="header">
             Hello
+          <hr />
           </header>
           <main className="main">
 
@@ -38,9 +40,10 @@ class App extends Component {
               </Route>
               <Route path="/signup" component={SignUp} />
               <Route path="/login" component={Login} />
+              <Route path="/profile" component={UserProfile} />
             </Switch>
           </main>
-          <footer className="footer"><Box mt={8}>
+          <footer className="footer pb-2"><Box mt={1}>
             <Copyright />
           </Box></footer>
         </div>
