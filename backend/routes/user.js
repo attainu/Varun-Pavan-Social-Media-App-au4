@@ -7,6 +7,7 @@ router.post("/login", usersController.loginUser);
 router.post("/login", usersController.loginUser);
 router.post("/signup/find", usersController.getOneUser);
 router.get("/", usersController.getAllUsers);
+router.get("/:id", usersController.getUser);
 router.get("/followers/:id", usersController.getAllFollowers);
 router.get("/following/:id", usersController.getAllFollowing);
 router.get("/posts/:id", usersController.getAllPosts);
