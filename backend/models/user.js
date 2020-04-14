@@ -46,7 +46,7 @@ const User = mongoose.model('users', {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'posts' }],
     },
     likedPosts: {
-        type: Array,
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'posts' }],
     },
     commentedPosts: {
         type: Array

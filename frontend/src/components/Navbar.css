@@ -12,3 +12,14 @@
 .darken-grey-text {
   color: #2e2e2e;
 }
+.items{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.options{
+  flex: 1;
+}
+ul{
+  margin-left: 50vw;
+}

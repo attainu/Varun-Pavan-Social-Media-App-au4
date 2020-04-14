@@ -11,6 +11,9 @@ router
     .route('/:id')
     .post(postController.createPost);
 
+router.put('/like', postController.likePost)
+router.put('/unlike', postController.unlikePost)
+
 router.get('/sortedPosts/:id', postController.sortedPosts);
 
 

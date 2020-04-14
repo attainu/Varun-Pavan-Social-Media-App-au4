@@ -6,20 +6,53 @@ import moment from 'moment'
 class Mainbar extends Component {
 
   state = {
-    posts: []
+    posts: [],
+    likedPosts: []
   };
 
   componentDidMount() {
-    let posts = axios.get('http://localhost:3010/posts/sortedPosts/5e88f56e7eba1e1c792efb5a/');
+    let posts = axios.get('http://localhost:3010/posts/sortedPosts/5e931261f6539324ecbe4576/');
     posts.then(res => {
       console.log(res.data.data);
       this.setState({
         posts: res.data.data
       })
     })
-  };
+    let user = axios.get('http://localhost:3010/users/5e931261f6539324ecbe4576')
+    user.then(res => {
+      // console.log("user", res.data.data.likedPosts);
+      this.setState({ likedPosts: res.data.data.likedPosts })
+    });
 
+  };
+  likeHandler = async (id, a) => {
+    let data = {
+      postId: id,
+      userId: "5e931261f6539324ecbe4576"
+    }
+    let like = await axios.put('http://localhost:3010/posts/like', data);
+    // console.log(like)
+    let user = axios.get('http://localhost:3010/users/5e931261f6539324ecbe4576')
+    user.then(res => {
+      // console.log("user", res.data.data.likedPosts);
+      this.setState({ likedPosts: res.data.data.likedPosts })
+    });
+  }
+  unlikeHandler = async (id) => {
+    let data = {
+      postId: id,
+      userId: "5e931261f6539324ecbe4576"
+    }
+    let unlike = await axios.put('http://localhost:3010/posts/unlike', data);
+    // console.log(unlike)
+    let user = axios.get('http://localhost:3010/users/5e931261f6539324ecbe4576')
+    user.then(res => {
+      // console.log("user", res.data.data.likedPosts);
+      this.setState({ likedPosts: res.data.data.likedPosts })
+    });
+  }
   render() {
+    // console.log(this.state.likedPosts)
     return (
       <div className="pt-5 mx-auto" style={{ width: '60vw', overflowY: 'scroll', height: '95vh' }}>
         <div class="form-group border">
@@ -37,7 +70,12 @@ class Mainbar extends Component {
               </div>
             </div>
             <h4 className="p-3">{data.data}</h4>
-            <p className='border p-1' style={{ display: 'flex' }}><span className="mx-auto">Like</span> <span className="mx-auto">Comments</span></p>
+            <p className='border p-1' style={{ display: 'flex' }}>
+              {!this.state.likedPosts.includes(data._id) ?
+                <span className="mx-auto" style={{ cursor: "pointer" }} onClick={() => this.likeHandler(data._id, data)}>Like</span>
+                : <span className="mx-auto" style={{ cursor: "pointer" }} onClick={() => this.unlikeHandler(data._id)}>Unlike</span>}
+
+              <span className="mx-auto" style={{ cursor: "pointer" }}>Comments</span></p>
           </div>
         ))}
       </div>

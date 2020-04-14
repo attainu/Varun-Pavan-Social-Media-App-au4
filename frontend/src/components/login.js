@@ -14,6 +14,13 @@ import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import './login.css'
+import { connect } from 'react-redux'
+let mapStateToProps = (state) => {
+    return {
+        state: state.profile
+    }
+}
+
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(8),
@@ -40,14 +47,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function SignIn() {
+function SignIn(props) {
     const classes = useStyles();
     const [email, newEmail] = useState('');
     const [password, newPassword] = useState('');
     const [open, setOpen] = useState(false);
 
 
-    let emailValidation = !/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email) || email.length < 6;
+    let emailValidation = !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email) || email.length < 6;
     let passwordValidation = !/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/.test(password);
     let disable = !emailValidation && !passwordValidation;
 
@@ -65,11 +72,21 @@ export default function SignIn() {
 
     const submitHandler = async () => {
         let user = await axios.post('http://localhost:3010/users/login', { email, password })
-        console.log(user.data.token);
+        console.log(user.data);
+        // console.log(user.data.token);
         if (!user.data.status) {
             return handleClick()
         }
-        // localStorage.setItem('token', user.data.token)
+        localStorage.setItem('token', user.data.token);
+        window.location.href = '/home'
+        props.dispatch({
+            type: "CURRENT_USER",
+            payload: user
+        })
+        props.dispatch({
+            type: "LOGIN",
+            payload: "LOGIN CLICKED"
+        })
     }
     return (
         <Container component="main" maxWidth="xs" className='mt-5 pb-5 login' >
@@ -130,8 +147,8 @@ export default function SignIn() {
                         onClick={submitHandler}
                         disabled={!disable}
                     >
-                        Sign In
-            </Button>
+                        <Rlink >   Sign In</Rlink>
+                    </Button>
                     <Grid container>
                         <Grid item xs>
                             <Link href="#" variant="body2">
@@ -150,3 +167,5 @@ export default function SignIn() {
         </Container>
     );
 }
+
+export default connect(mapStateToProps)(SignIn)

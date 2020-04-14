@@ -80,3 +80,62 @@ exports.sortedPosts = catchAsync(async (req, res, next) => {
     data: posts
   })
 });
+
+/***
+ * Function Purpose - Like a post and update the user and post models
+ * URL - /posts/like (put) - {
+"postId":"id of the post to be liked",
+"userId":"id of the user liking the post"
+}
+ * ***/
+exports.likePost = catchAsync(async (req, res) => {
+  let { postId, userId } = req.body
+  let post = await Post.findOne({ _id: postId });
+  if (post.liked.includes(userId)) {
+    return res.status(401).json({
+      status: false,
+      msg: "Post already liked"
+    })
+  }
+  let user = await User.findById(userId);
+  post.liked.push(userId);
+  user.likedPosts.push(postId);
+  let userSaved = await user.save();
+  let postSaved = await post.save();
+  return res.status(200).json({
+    status: true,
+    msg: "post Liked",
+    post: postSaved,
+    User: userSaved
+  })
+})
+
+/***
+ * Function Purpose - Unlike a post and update the user and post models
+ * URL - /posts/unlike (put) - {
+"postId":"id of the post to be unliked",
+"userId":"id of the user unliking the post"
+}
+ * ***/
+
+exports.unlikePost = catchAsync(async (req, res) => {
+  let { userId, postId } = req.body;
+  let post = await Post.findById(postId);
+  if (post.liked.includes(userId)) {
+    let user = await User.findById(userId);
+    user.likedPosts.splice(user.likedPosts.indexOf(postId), 1)
+    post.liked.splice(post.liked.indexOf(userId), 1);
+    let userSaved = await user.save();
+    let postSaved = await post.save()
+    return res.status(200).json({
+      status: true,
+      msg: "Post  Unliked",
+      post: postSaved,
+      user: userSaved
+    })
+  }
+  return res.status(400).json({
+    status: false,
+    msg: "post alreday unliked"
+  })
+})
