@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from "react-redux";
 import moment from 'moment'
+import { Favorite, FavoriteBorder } from '@material-ui/icons';
+import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
+
 
 class Mainbar extends Component {
 
@@ -25,7 +28,7 @@ class Mainbar extends Component {
     });
 
   };
-  likeHandler = async (id, a) => {
+  likeHandler = async (id) => {
     let data = {
       postId: id,
       userId: "5e931261f6539324ecbe4576"
@@ -72,10 +75,10 @@ class Mainbar extends Component {
             <h4 className="p-3">{data.data}</h4>
             <p className='border p-1' style={{ display: 'flex' }}>
               {!this.state.likedPosts.includes(data._id) ?
-                <span className="mx-auto" style={{ cursor: "pointer" }} onClick={() => this.likeHandler(data._id, data)}>Like</span>
-                : <span className="mx-auto" style={{ cursor: "pointer" }} onClick={() => this.unlikeHandler(data._id)}>Unlike</span>}
+                <span className="mx-auto" style={{ cursor: "pointer" }} onClick={() => this.likeHandler(data._id)}> <FavoriteBorder /></span>
+                : <span className="mx-auto" style={{ cursor: "pointer" }} onClick={() => this.unlikeHandler(data._id)}><Favorite /></span>}
 
-              <span className="mx-auto" style={{ cursor: "pointer" }}>Comments</span></p>
+              <span className="mx-auto" style={{ cursor: "pointer" }}><ChatBubbleOutlineIcon /> </span></p>
           </div>
         ))}
       </div>
