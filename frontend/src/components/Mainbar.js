@@ -6,6 +6,7 @@ import { Favorite, FavoriteBorder } from '@material-ui/icons';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { Link } from 'react-router-dom'
 
 
 class Mainbar extends Component {
@@ -16,9 +17,10 @@ class Mainbar extends Component {
     postsByUser: [],
     postComment: "",
     editComment: "",
+    userId: "5e931261f6539324ecbe4576"
   };
   getPosts = () => {
-    let posts = axios.get('http://localhost:3010/posts/sortedPosts/5e931261f6539324ecbe4576/');
+    let posts = axios.get(`http://localhost:3010/posts/sortedPosts/${this.state.userId}`);
     posts.then(res => {
       console.log(res.data.data);
       this.setState({
@@ -27,7 +29,7 @@ class Mainbar extends Component {
     })
   }
   getUser = () => {
-    let user = axios.get('http://localhost:3010/users/5e931261f6539324ecbe4576')
+    let user = axios.get(`http://localhost:3010/users/${this.state.userId}`)
     user.then(res => {
       this.setState({ likedPosts: res.data.data.likedPosts, postsByUser: res.data.data.posts })
     });
@@ -40,7 +42,7 @@ class Mainbar extends Component {
   likeHandler = async (id) => {
     let data = {
       postId: id,
-      userId: "5e931261f6539324ecbe4576"
+      userId: this.state.userId
     }
     await axios.put('http://localhost:3010/posts/like', data);
     this.getUser()
@@ -49,7 +51,7 @@ class Mainbar extends Component {
   unlikeHandler = async (id) => {
     let data = {
       postId: id,
-      userId: "5e931261f6539324ecbe4576"
+      userId: this.state.userId
     }
     await axios.put('http://localhost:3010/posts/unlike', data);
     this.getUser()
@@ -58,7 +60,7 @@ class Mainbar extends Component {
 
   editHandler = async (commentId) => {
     let data = {
-      userId: "5e931261f6539324ecbe4576",
+      userId: this.state.userId,
       commentId,
       postComment: this.state.editComment
     }
@@ -70,7 +72,7 @@ class Mainbar extends Component {
 
   commentHandler = async (id, idx) => {
     let data = {
-      userId: "5e931261f6539324ecbe4576",
+      userId: this.state.userId,
       postId: id,
       postComment: this.state.postComment
     }
@@ -83,7 +85,7 @@ class Mainbar extends Component {
 
   deleteHandler = async (commentId, postId) => {
     let data = {
-      userId: "5e931261f6539324ecbe4576",
+      userId: this.state.userId,
       commentId,
       postId
     }
@@ -129,15 +131,15 @@ class Mainbar extends Component {
                       <div className="border-bottom" style={{ display: 'flex', alignContent: 'center' }}>
                         <img className="rounded-circle m-2" src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg" style={{ width: "2rem" }} alt="Profile"></img>
                         <div className="pl-2" style={{ alignSelf: "center" }}>
-                          <h6 className="mb-0">{comment.userId.name}</h6>
+                          <h6 className="mb-0"><Link to={`/${comment.userId._id}`} style={{ textDecoration: "none" }}>{comment.userId.name}</Link></h6>
                           <p className="mb-0" style={{ fontSize: '0.8rem' }}>{moment(comment.commentCreated).format('DD MMMM YYYY HH:mm')}</p><br />
                         </div>
                         <hr />
-                        {comment.userId._id === "5e931261f6539324ecbe4576" &&
+                        {comment.userId._id === this.state.userId &&
                           <button title="Edit" className="btn" data-toggle="modal" data-target="#exampleModalCenter" onClick={() => this.setState({ editComment: comment.comment })}>
                             <EditIcon />
                           </button>}
-                        {(comment.userId._id === "5e931261f6539324ecbe4576" || this.state.postsByUser.includes(data._id)) &&
+                        {(comment.userId._id === this.state.userId || this.state.postsByUser.includes(data._id)) &&
                           <button title="Delete" className="btn" onClick={() => this.deleteHandler(comment._id, data._id)}>
                             <DeleteIcon />
                           </button>}
