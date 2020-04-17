@@ -1,5 +1,6 @@
 const Post = require('./../models/post');
 const User = require('./../models/user');
+const Comment = require('./../models/comment');
 const catchAsync = require('./../utils/catchAsync');
 
 /***
@@ -36,10 +37,12 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 exports.deletePost = catchAsync(async (req, res, next) => {
   let { _id } = req.body;
   let post = await Post.deleteOne({ _id });
+  let comment = await Comment.deleteMany({ postId: _id })
   res.status(201).json({
     status: 'success',
     data: {
-      data: post
+      data: post,
+      comment
     }
   });
 });
@@ -49,7 +52,8 @@ exports.deletePost = catchAsync(async (req, res, next) => {
  * URL - /posts/:id - Id of the user
  * ***/
 
-exports.sortedPosts = catchAsync(async (req, res, next) => {
+/**
+ * exports.sortedPosts = catchAsync(async (req, res, next) => {
   let { id } = req.params;
   console.log(new Date())
   let posts = await User.findOne({ _id: id })
@@ -58,7 +62,7 @@ exports.sortedPosts = catchAsync(async (req, res, next) => {
       select: 'posts',
       populate: {
         path: 'posts',
-        select: 'data userId dateCreated',
+        select: 'data userId dateCreated liked commentsId',
         options: {
           limit: 10
         },
@@ -70,6 +74,43 @@ exports.sortedPosts = catchAsync(async (req, res, next) => {
         populate: {
           path: 'userId',
           select: '_id name email'
+        }
+      }
+    });
+  posts = posts.following.reduce((acc, data) => [...acc, data.posts], []);
+  posts = [].concat(...posts);
+  posts.sort((posts1, posts2) => posts1.dateCreated > posts2.dateCreated ? -1 : 1);
+  res.status(201).json({
+    data: posts
+  })
+});
+ */
+
+exports.sortedPosts = catchAsync(async (req, res, next) => {
+  let { id } = req.params;
+  // console.log(new Date())
+  let posts = await User.findOne({ _id: id })
+    .populate({
+      path: 'following',
+      select: 'posts',
+      populate: {
+        path: 'posts',
+        select: 'data userId dateCreated liked commentsId',
+        options: {
+          limit: 10
+        },
+        match: {
+          dateCreated: {
+            $lte: new Date()
+          }
+        },
+        populate: {
+          path: 'userId commentsId',
+          select: '_id name email comment commentCreated',
+          populate: {
+            path: "userId",
+            select: "_id name"
+          }
         }
       }
     });

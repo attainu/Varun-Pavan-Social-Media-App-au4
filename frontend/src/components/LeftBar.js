@@ -11,7 +11,7 @@ class LeftBar extends Component {
     // let data = axios.get('http://localhost:3010/users/5e88f56e7eba1e1c792efb5a');
     let data = axios.get('http://localhost:3010/users/5e931261f6539324ecbe4576');
     data.then(res => {
-      console.log(res.data.data)
+      // console.log(res.data.data)
       this.setState({
         data: res.data.data,
         dataReceived: true

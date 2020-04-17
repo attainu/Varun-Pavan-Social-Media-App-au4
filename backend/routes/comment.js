@@ -8,7 +8,7 @@ router
     .delete(commentController.deleteComment);
 
 router
-    .route('/:id')
+    .route('/')
     .post(commentController.createComment)
 
 

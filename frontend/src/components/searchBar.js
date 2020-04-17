@@ -48,7 +48,7 @@ class SearchBar extends Component {
             <> <span onClick={() => this.props.dispatch({
                 type: "SEARCH_PROFILE",
                 payload: suggestion._id
-            })}><Link to={`/search`}><img className='mr-2' src="https://conferenceoeh.com/wp-content/uploads/profile-dummy-girl.jpg" style={{ height: "30px", width: "30px", borderRadius: "50%" }} /> {suggestion.name}</Link></span></>
+            })}><Link to={`/search`}><img className='mr-2' alt="User" src="https://conferenceoeh.com/wp-content/uploads/profile-dummy-girl.jpg" style={{ height: "30px", width: "30px", borderRadius: "50%" }} /> {suggestion.name}</Link></span></>
         );
     }
     onChange = (event, { newValue, method }) => {

@@ -40,5 +40,5 @@
   color: white;
 }
 .nav-header{
-  position: fixed;
+  position: sticky;
 }

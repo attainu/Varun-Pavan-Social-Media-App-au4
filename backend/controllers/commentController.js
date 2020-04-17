@@ -3,14 +3,14 @@ const Post = require('./../models/post');
 const catchAsync = require('./../utils/catchAsync');
 
 exports.createComment = catchAsync(async (req, res, next) => {
-    let { postcomment } = req.body;
-    let { id } = req.params;
-    let post = await Post.findOne({ _id: id });
-    let comment = await Comment.create({ comment: postcomment });
-    post.comment.push(comment._id);
+    let { userId, postId, postComment } = req.body;
+    let post = await Post.findOne({ _id: postId });
+    let comment = await Comment.create({ userId, comment: postComment, postId });
+    post.commentsId.push(comment._id);
     let postSaved = await post.save();
     res.status(201).json({
-        status: 'success',
+        status: true,
+        msg: "comment posted",
         data: {
             comment: comment,
             post: postSaved
@@ -20,10 +20,11 @@ exports.createComment = catchAsync(async (req, res, next) => {
 });
 
 exports.updateComment = catchAsync(async (req, res, next) => {
-    let { id, postcomment } = req.body;
-    let comment = await Comment.update({ _id: id }, { $set: { comment: postcomment } });
+    let { userId, commentId, postComment } = req.body;
+    let comment = await Comment.update({ _id: commentId, userId }, { $set: { comment: postComment } });
     res.status(201).json({
-        status: 'success',
+        status: true,
+        msg: "comment updated",
         data: {
             data: comment
         }
@@ -31,16 +32,26 @@ exports.updateComment = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteComment = catchAsync(async (req, res, next) => {
-    let { _id, postId } = req.body;
-    let comment = await Comment.deleteOne({ _id });
+    let { userId, commentId, postId } = req.body;
+    let comment = await Comment.findOne({ _id: commentId });
     let post = await Post.findOne({ _id: postId });
-    post.comment.splice(comment.indexOf(_id), 1);
-    let postSaved = await post.save();
-    res.status(201).json({
-        status: 'success',
-        data: {
-            data: comment,
-            postSaved
-        }
-    });
+    if (post.userId == userId || comment.userId == userId) {
+        let deletedComment = await Comment.deleteOne({ _id: commentId })
+        post.commentsId.splice(post.commentsId.indexOf(commentId), 1);
+        let postSaved = await post.save();
+        return res.status(201).json({
+            status: true,
+            msg: "Comment deleted",
+            data: {
+                data: comment,
+                postSaved,
+                deletedComment
+            }
+        });
+    } else {
+        return res.status(400).json({
+            status: false,
+            msg: "Comment deletion failed"
+        })
+    }
 });

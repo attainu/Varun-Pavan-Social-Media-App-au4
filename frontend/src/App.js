@@ -12,7 +12,7 @@ import Navbar from './components/Navbar';
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="white" align="center">
+    <Typography variant="body2" color="inherit" align="center">
       {'Copyright © '}
       <Link color="inherit" href="/">
         Social Media
