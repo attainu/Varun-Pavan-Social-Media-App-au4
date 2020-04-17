@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Post = mongoose.model('posts', {
+const Post = mongoose.model('posts', new mongoose.Schema({
     dataType: {
         type: String,
         enum: ['image', 'text', 'image-text']
@@ -13,10 +13,6 @@ const Post = mongoose.model('posts', {
         ref: 'users',
         required: true
     },
-    dateCreated: {
-        type: Date,
-        default: Date.now
-    },
     liked: {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
         default: []
@@ -25,9 +21,9 @@ const Post = mongoose.model('posts', {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'comments' }],
         default: []
     },
-    // commented: {
-    //     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'comments' }],
-    //     default: []
-    // }
-});
+}, {
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+}));
 module.exports = Post;

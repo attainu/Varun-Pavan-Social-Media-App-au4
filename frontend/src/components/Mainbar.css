@@ -1,0 +1,16 @@
+.posts {
+  overflow-y: scroll;
+  height: 93vh;
+}
+
+@media screen and (min-width: 768px) {
+  .posts {
+    width: 70vw;
+  }
+}
+
+.btn:focus,
+.btn:active {
+  outline: none !important;
+  box-shadow: none;
+}

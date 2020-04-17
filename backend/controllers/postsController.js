@@ -25,7 +25,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
 
 exports.updatePost = catchAsync(async (req, res, next) => {
   let { userId, data, liked, commented } = req.body;
-  let post = await Post.update({ userId }, { $set: { data, liked, commented } });
+  let post = await Post.updateOne({ userId }, { $set: { data, liked, commented } });
   res.status(201).json({
     status: 'success',
     data: {
