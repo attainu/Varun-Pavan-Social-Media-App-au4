@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import LeftBar from './LeftBar';
 import Mainbar from './Mainbar';
+import './Home.css'
 
 class Home extends Component {
   render() {
     return (
-      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+      <div className="layout">
         <LeftBar />
         <Mainbar />
       </div>

@@ -5,6 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,12 +14,25 @@ import { Link as Rlink } from 'react-router-dom'
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import './login.css'
+import './login.css';
 import { connect } from 'react-redux'
 let mapStateToProps = (state) => {
     return {
         state: state.profile
     }
+}
+
+function Copyright() {
+    return (
+        <Typography variant="body2" color="white" align="center">
+            {'Copyright © '}
+            <Link color="inherit" href="/">
+                Social Media
+        </Link>{' '}
+            {new Date().getFullYear()}
+            {'.'}
+        </Typography>
+    );
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -89,82 +103,87 @@ function SignIn(props) {
         })
     }
     return (
-        <Container component="main" maxWidth="xs" className='mt-5 pb-5 login' >
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="error">
-                    Incorrect email or password!
+        <>
+            <Container component="main" maxWidth="xs" className='mt-5 pb-5 login' >
+                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="error">
+                        Incorrect email or password!
                 </Alert>
-            </Snackbar>
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Sign in
+                </Snackbar>
+                <CssBaseline />
+                <div className={classes.paper}>
+                    <Avatar className={classes.avatar}>
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
+                        Sign in
           </Typography>
-                <form className={classes.form} noValidate>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        value={email}
-                        onChange={(e) => newEmail(e.target.value)}
-                        error={emailValidation && email.length !== 0}
-                        helperText={emailValidation && email.length !== 0 ? "*Invalid Email" : null}
-                        autoFocus
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        value={password}
-                        onChange={(e) => newPassword(e.target.value)}
-                        error={passwordValidation && password.length !== 0}
-                        helperText={passwordValidation && password.length !== 0 ? "*Password must contain one uppercase, one lowercase and a special character and must be of minimum 6 characters" : null}
+                    <form className={classes.form} noValidate>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            value={email}
+                            onChange={(e) => newEmail(e.target.value)}
+                            error={emailValidation && email.length !== 0}
+                            helperText={emailValidation && email.length !== 0 ? "*Invalid Email" : null}
+                            autoFocus
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            value={password}
+                            onChange={(e) => newPassword(e.target.value)}
+                            error={passwordValidation && password.length !== 0}
+                            helperText={passwordValidation && password.length !== 0 ? "*Password must contain one uppercase, one lowercase and a special character and must be of minimum 6 characters" : null}
 
-                    />
-                    {/* <FormControlLabel
+                        />
+                        {/* <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label="Remember me"
                     /> */}
-                    <Button
-                        type="button"
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        onClick={submitHandler}
-                        disabled={!disable}
-                    >
-                        <Rlink >   Sign In</Rlink>
-                    </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link href="#" variant="body2">
-                                Forgot password?
+                        <Button
+                            type="button"
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            onClick={submitHandler}
+                            disabled={!disable}
+                        >
+                            <Rlink >   Sign In</Rlink>
+                        </Button>
+                        <Grid container>
+                            <Grid item xs>
+                                <Link href="#" variant="body2">
+                                    Forgot password?
                 </Link>
+                            </Grid>
+                            <Grid item>
+                                <Rlink to='/signup' variant="body2">
+                                    {"Don't have an account? Sign Up"}
+                                </Rlink>
+                            </Grid>
                         </Grid>
-                        <Grid item>
-                            <Rlink to='/signup' variant="body2">
-                                {"Don't have an account? Sign Up"}
-                            </Rlink>
-                        </Grid>
-                    </Grid>
-                </form>
-            </div>
+                    </form>
+                </div>
 
-        </Container>
+            </Container>
+            <footer className="footer pb-2"><Box mt={3}>
+                <Copyright />
+            </Box></footer>
+        </>
     );
 }
 

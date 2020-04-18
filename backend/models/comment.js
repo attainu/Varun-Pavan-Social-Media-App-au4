@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
 const Comment = mongoose.model('comments', {
     userId: {
         type: mongoose.Schema.Types.ObjectId,

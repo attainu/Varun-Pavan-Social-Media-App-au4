@@ -8,6 +8,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom'
 
+import './Mainbar.css';
 
 class Mainbar extends Component {
 
@@ -18,18 +19,19 @@ class Mainbar extends Component {
     postComment: "",
     editComment: "",
     userId: "5e931261f6539324ecbe4576",
-    opened: ""
+    opened: "",
+    userId: "5e88f56e7eba1e1c792efb5a"
   };
   getPosts = () => {
     let posts = axios.get(`http://localhost:3010/posts/sortedPosts/${this.state.userId}`);
     posts.then(res => {
-      console.log(res.data.data);
       this.setState({
         posts: res.data.data,
         opened: res.data.data[0]._id
       })
     })
   }
+
   getUser = () => {
     let user = axios.get(`http://localhost:3010/users/${this.state.userId}`)
     user.then(res => {
@@ -41,6 +43,8 @@ class Mainbar extends Component {
     this.getUser()
     this.getPosts()
   };
+
+
   likeHandler = async (id) => {
     let data = {
       postId: id,
@@ -50,6 +54,8 @@ class Mainbar extends Component {
     this.getUser()
     this.getPosts()
   }
+
+
   unlikeHandler = async (id) => {
     let data = {
       postId: id,
@@ -95,18 +101,30 @@ class Mainbar extends Component {
     }
     await axios.delete("http://localhost:3010/comments", { data });
     this.getPosts()
+    let user = axios.get('http://localhost:3010/users/5e931261f6539324ecbe4576')
+    user.then(res => {
+      // console.log("user", res.data.data.likedPosts);
+      this.setState({ likedPosts: res.data.data.likedPosts })
+    });
   }
+
+
   render() {
     let commentAuth = this.state.postComment.trim().length < 1
-    let editCommentAuth = this.state.editComment.trim().length < 1
+    let editCommentAuth = this.state.editComment.trim().length < 1;
+    let posts;
+    if (this.props.posts)
+      posts = this.props.posts;
+    else
+      posts = this.state.posts;
     return (
-      <div className="pt-5 mx-auto" style={{ width: '60vw', overflowY: 'scroll', height: '95vh' }}>
+      <div className="pt-5 px-2 px-md-0 mx-md-auto mx-lg-auto posts" style={{ width: '60vw', overflowY: 'scroll', height: '95vh' }}>
         <div className="form-group border">
           <label className="p-2 px-3 mb-0" style={{ width: '100%', backgroundColor: "#dedcdc" }}>Create post</label>
           <textarea className="form-control" id="exampleFormControlTextarea1" rows="4" placeholder="Write Something Here" />
           <button className="btn btn-primary ml-auto mt-2">Post</button>
         </div>
-        {this.state.posts.length && this.state.posts.map((data, idx) => {
+        {posts.length && posts.map((data, idx) => {
           return (
             <div key={idx} className="border mb-3">
               <div className="border-bottom" style={{ display: 'flex', alignContent: 'center' }}>
@@ -188,10 +206,11 @@ class Mainbar extends Component {
                 <textarea className="form-control" rows="2" id={idx} onChange={(e) => this.setState({ postComment: e.target.value })} placeholder="Write a comment..." />
                 <button className="btn btn-outline-success" disabled={commentAuth} onClick={() => this.commentHandler(data._id, idx)}>Comment</button>
 
-              </div>
-              {/* Comments section ends */}
 
-              {/* onPointerOver={() => console.log("focused")} */}
+                {/* Comments section ends */}
+
+                {/* onPointerOver={() => console.log("focused")} */}
+              </div>
             </div>
           )
         })}
@@ -201,10 +220,11 @@ class Mainbar extends Component {
       </div>
     )
   }
-};
+}
 
 const mapStateToProps = state => {
   return {
+    userId: state.app.userId
   }
 }
 

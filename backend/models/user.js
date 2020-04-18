@@ -14,6 +14,10 @@ const User = mongoose.model('users', {
         lowercase: true,
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
+    profilePic: {
+        type: String,
+        default: ""
+    },
     phone: {
         type: Number,
         min: [999999999, 'Please provide a valid Mobile Number'],
@@ -38,18 +42,26 @@ const User = mongoose.model('users', {
     },
     following: {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
+        default: []
     },
     followers: {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
+        default: []
     },
     posts: {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'posts' }],
+        default: []
     },
     likedPosts: {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'posts' }],
+        default: []
     },
     commentedPosts: {
-        type: Array
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'posts' }],
+        default: []
     }
 })
 module.exports = User;
+
+// Custom Validations: express-validator
+// Following requeest collection

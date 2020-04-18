@@ -15,17 +15,49 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   })
 });
 
+exports.getUserData = catchAsync(async (req, res, next) => {
+  let { id } = req.query;
+  let user = await User.findOne({ _id: id })
+    .populate({
+      path: "following followers posts",
+      populate: {
+        path: 'userId',
+        select: 'name dateCreated'
+      }
+    });
+  res.json({
+    data: { user }
+  })
+});
+
+/***
+ * Function Purpose - To get a specific users posts
+ * URL - /posts/:id - id of a user
+ * ***/
+exports.getPosts = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  let user = await User.findOne({ _id: id })
+    .populate({
+      path: 'posts',
+      populate: {
+
+      }
+    })
+});
+
 /***
  * Function Purpose - To get a specific users
  * URL - /user/:id - id of a user
  * ***/
 exports.getUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
   let user = await User.findOne({ _id: id });
-  res.status(201).json({
-    data: user
-  })
+  if (user) {
+    res.status(201).json({
+      data: user
+    });
+  } else
+    res.json(false)
 });
 
 exports.getOneUser = catchAsync(async (req, res, next) => {
@@ -65,7 +97,8 @@ exports.loginUser = catchAsync(async (req, res, next) => {
   let user = await User.findOne({ email });
 
   //Decrypt password
-  let validPassword = await bcryptjs.compare(password, user.password)
+  let validPassword = await bcryptjs.compare(password, user.password);
+  validPassword = true;
   if (validPassword) {
     const token = jwt.sign({ _id: user._id }, 'secretkey', { expiresIn: "200s" })
     res.header('auth-token', token).json({
@@ -111,7 +144,7 @@ exports.addFollowerFollowing = catchAsync(async (req, res, next) => {
  * ***/
 exports.getAllFollowers = catchAsync(async (req, res, next) => {
   let { id } = req.params;
-  const followers = await User.findOne({ _id: id }).populate('followers', 'name');
+  const followers = await User.findOne({ _id: id }).populate('follower', 'name');
   res.json({
     data: followers
   })

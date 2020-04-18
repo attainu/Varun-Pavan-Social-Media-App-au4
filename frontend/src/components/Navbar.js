@@ -4,11 +4,6 @@ import SearchBar from './searchBar'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-let mapsStateToProps = (state) => {
-  return {
-    state: state.auth
-  }
-}
 class Navbar extends Component {
   render() {
     let location = window.location.pathname === '/signup' || window.location.pathname === '/login';
@@ -41,6 +36,11 @@ class Navbar extends Component {
         </nav>
       </header>
     )
+  }
+}
+let mapsStateToProps = (state) => {
+  return {
+    state: state.auth
   }
 }
 export default connect(mapsStateToProps)(Navbar);
