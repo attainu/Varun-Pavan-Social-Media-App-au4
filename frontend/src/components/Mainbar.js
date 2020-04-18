@@ -17,14 +17,16 @@ class Mainbar extends Component {
     postsByUser: [],
     postComment: "",
     editComment: "",
-    userId: "5e931261f6539324ecbe4576"
+    userId: "5e931261f6539324ecbe4576",
+    opened: ""
   };
   getPosts = () => {
     let posts = axios.get(`http://localhost:3010/posts/sortedPosts/${this.state.userId}`);
     posts.then(res => {
       console.log(res.data.data);
       this.setState({
-        posts: res.data.data
+        posts: res.data.data,
+        opened: res.data.data[0]._id
       })
     })
   }
@@ -57,6 +59,9 @@ class Mainbar extends Component {
     this.getUser()
     this.getPosts()
   }
+  commentOpenHandler = (opened) => {
+    this.setState({ opened })
+  }
 
   editHandler = async (commentId) => {
     let data = {
@@ -64,8 +69,7 @@ class Mainbar extends Component {
       commentId,
       postComment: this.state.editComment
     }
-    let editComment = await axios.put('http://localhost:3010/comments', data)
-    console.log(editComment);
+    await axios.put('http://localhost:3010/comments', data)
     this.getPosts();
     this.setState({ editComment: "" })
   }
@@ -76,11 +80,11 @@ class Mainbar extends Component {
       postId: id,
       postComment: this.state.postComment
     }
-    let comment = await axios.post("http://localhost:3010/comments", data);
+    await axios.post("http://localhost:3010/comments", data);
     this.setState({ postComment: "" })
-    console.log(comment)
     this.getPosts()
     document.getElementById(idx).value = ""
+    this.setState({ opened: id })
   }
 
   deleteHandler = async (commentId, postId) => {
@@ -89,8 +93,7 @@ class Mainbar extends Component {
       commentId,
       postId
     }
-    let deleteComment = await axios.delete("http://localhost:3010/comments", { data });
-    console.log(deleteComment);
+    await axios.delete("http://localhost:3010/comments", { data });
     this.getPosts()
   }
   render() {
@@ -116,17 +119,28 @@ class Mainbar extends Component {
               <h4 className="p-3">{data.data}</h4>
               <p className='border p-1' style={{ display: 'flex' }}>
                 {!this.state.likedPosts.includes(data._id) ?
-                  <span className="mx-auto" style={{ cursor: "pointer" }} onClick={() => this.likeHandler(data._id)} title="Like"> <FavoriteBorder /> {data.liked.length === 0 ? null : data.liked.length}</span>
-                  : <span className="mx-auto" style={{ cursor: "pointer" }} onClick={() => this.unlikeHandler(data._id)} title="Unlike">< Favorite /> {data.liked.length === 0 ? null : data.liked.length}</span>}
+                  <span className="mx-auto" style={{ cursor: "pointer" }}
+                    onClick={() => this.likeHandler(data._id)} title="Like">
+                    <FavoriteBorder />
+                    {data.liked.length === 0 ? null : data.liked.length}
+                  </span>
+                  : <span className="mx-auto" style={{ cursor: "pointer" }}
+                    onClick={() => this.unlikeHandler(data._id)} title="Unlike">
+                    < Favorite />
+                    {data.liked.length === 0 ? null : data.liked.length}
+                  </span>}
 
 
                 {/* Comments section */}
 
 
-                <span className="mx-auto" style={{ cursor: "pointer" }} title="Comment" onClick={() => this.setState({ hide: !this.state.hide })}><ChatBubbleOutlineIcon /> {data.commentsId.length === 0 ? null : data.commentsId.length} </span></p>
+                <span className="mx-auto" style={{ cursor: "pointer" }} title="Comment" onClick={() => {
+                  return this.setState({ opened: data._id });
+                }}><ChatBubbleOutlineIcon /> {data.commentsId.length === 0 ? null : data.commentsId.length} </span></p>
               <div>
-                {data.commentsId.length > 0 && data.commentsId.map((comment, cidx) =>
-                  <div key={cidx} className="m-3">
+                {data.commentsId.length > 0 && data.commentsId.map((comment, cidx) => {
+                  // if (data._id === this.state.opened) 
+                  return (<div key={cidx} className="m-3">
                     <div style={{ border: "1px #dee2e6 solid" }}>
                       <div className="border-bottom" style={{ display: 'flex', alignContent: 'center' }}>
                         <img className="rounded-circle m-2" src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg" style={{ width: "2rem" }} alt="Profile"></img>
@@ -169,7 +183,8 @@ class Mainbar extends Component {
                         </div>
                       </div>
                     </div>
-                  </div>)}
+                  </div>)
+                })}
                 <textarea className="form-control" rows="2" id={idx} onChange={(e) => this.setState({ postComment: e.target.value })} placeholder="Write a comment..." />
                 <button className="btn btn-outline-success" disabled={commentAuth} onClick={() => this.commentHandler(data._id, idx)}>Comment</button>
 
