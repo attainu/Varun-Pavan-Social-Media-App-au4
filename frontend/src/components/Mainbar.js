@@ -20,11 +20,14 @@ class Mainbar extends Component {
     editComment: "",
     userId: "5e931261f6539324ecbe4576",
     opened: "",
-    userId: "5e88f56e7eba1e1c792efb5a"
+    // userId: "5e88f56e7eba1e1c792efb5a",
+    title: "",
+    modalData: []
   };
   getPosts = () => {
     let posts = axios.get(`http://localhost:3010/posts/sortedPosts/${this.state.userId}`);
     posts.then(res => {
+      console.log(res.data.data)
       this.setState({
         posts: res.data.data,
         opened: res.data.data[0]._id
@@ -107,7 +110,15 @@ class Mainbar extends Component {
       this.setState({ likedPosts: res.data.data.likedPosts })
     });
   }
-
+  likesCommentsModalHandler = (title, modalData) => {
+    if (title === "Likes") {
+      this.setState({ title, modalData })
+    }
+    if (title === "Comments") {
+      modalData = modalData.map(comments => comments.userId).filter((v, i, a) => a.findIndex(t => (t._id === v._id)) === i)
+      this.setState({ title, modalData })
+    }
+  }
 
   render() {
     let commentAuth = this.state.postComment.trim().length < 1
@@ -137,24 +148,34 @@ class Mainbar extends Component {
               <h4 className="p-3">{data.data}</h4>
               <p className='border p-1' style={{ display: 'flex' }}>
                 {!this.state.likedPosts.includes(data._id) ?
-                  <span className="mx-auto" style={{ cursor: "pointer" }}
-                    onClick={() => this.likeHandler(data._id)} title="Like">
-                    <FavoriteBorder />
-                    {data.liked.length === 0 ? null : data.liked.length}
+                  <span className="mx-auto" >
+                    <FavoriteBorder className="mr-2" style={{ cursor: "pointer" }}
+                      onClick={() => this.likeHandler(data._id)} title="Like" />
+                    {data.liked.length > 0 && <button type="button" style={{ backgroundColor: "white" }} data-toggle="modal" data-target="#exampleModalLong" onClick={() => this.likesCommentsModalHandler("Likes", data.liked)} >
+
+                      {data.liked.length}
+                    </button>}
                   </span>
-                  : <span className="mx-auto" style={{ cursor: "pointer" }}
-                    onClick={() => this.unlikeHandler(data._id)} title="Unlike">
-                    < Favorite />
-                    {data.liked.length === 0 ? null : data.liked.length}
+                  : <span className="mx-auto" >
+                    < Favorite className="mr-2" style={{ cursor: "pointer" }}
+                      onClick={() => this.unlikeHandler(data._id)} title="Unlike" />
+                    {data.liked.length > 0 && <button style={{ backgroundColor: "white" }} type="button" data-toggle="modal" data-target="#exampleModalLong" onClick={() => this.likesCommentsModalHandler("Likes", data.liked)}>
+
+                      {data.liked.length}
+                    </button>}
                   </span>}
 
 
                 {/* Comments section */}
 
 
-                <span className="mx-auto" style={{ cursor: "pointer" }} title="Comment" onClick={() => {
+                <span className="mx-auto" ><ChatBubbleOutlineIcon className="mr-2" style={{ cursor: "pointer" }} title="Comment" onClick={() => {
                   return this.setState({ opened: data._id });
-                }}><ChatBubbleOutlineIcon /> {data.commentsId.length === 0 ? null : data.commentsId.length} </span></p>
+                }} />
+                  {data.commentsId.length > 0 && <button type="button" style={{ backgroundColor: "white" }} data-toggle="modal" data-target="#exampleModalLong" onClick={() => this.likesCommentsModalHandler("Comments", data.commentsId)}>
+                    {data.commentsId.length}
+                  </button>}
+                </span></p>
               <div>
                 {data.commentsId.length > 0 && data.commentsId.map((comment, cidx) => {
                   // if (data._id === this.state.opened) 
@@ -201,6 +222,42 @@ class Mainbar extends Component {
                         </div>
                       </div>
                     </div>
+
+
+                    {/* Likes/comments modal */}
+
+
+
+                    <div className="modal fade" id="exampleModalLong" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                      <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLongTitle">{this.state.title}</h5>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true" onClick={() => this.setState({ title: "", modalData: [] })}>&times;</span>
+                            </button>
+                          </div>
+                          <div className="modal-body">
+                            {this.state.modalData.length > 0 && <table className="table">
+                              <tbody>
+                                {this.state.modalData.map((likes, idx) => <tr key={idx}>
+                                  <td>
+                                    <Link to={`/${likes._id}`}>
+                                      <img className="rounded-circle m-2" src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg" style={{ width: "2rem" }} alt="Profile"></img>
+                                    </Link>
+                                  </td>
+                                  <td><Link to={`/${likes._id}`} >{likes.name}</Link></td>
+                                  {/* <td><button>Action</button></td> */}
+                                </tr>)}
+                              </tbody>
+                            </table>}
+                          </div>
+                          <div className="modal-footer">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Ends */}
                   </div>)
                 })}
                 <textarea className="form-control" rows="2" id={idx} onChange={(e) => this.setState({ postComment: e.target.value })} placeholder="Write a comment..." />

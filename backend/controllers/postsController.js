@@ -105,7 +105,7 @@ exports.sortedPosts = catchAsync(async (req, res, next) => {
           }
         },
         populate: {
-          path: 'userId commentsId',
+          path: 'userId commentsId liked',
           select: '_id name email comment commentCreated',
           populate: {
             path: "userId",
