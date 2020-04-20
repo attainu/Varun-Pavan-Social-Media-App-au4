@@ -7,6 +7,7 @@ import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
 import './Mainbar.css';
 
@@ -120,6 +121,9 @@ class Mainbar extends Component {
     }
   }
 
+  profilePage = (url) => {
+    this.props.history.push(url._id);
+  }
   render() {
     let commentAuth = this.state.postComment.trim().length < 1
     let editCommentAuth = this.state.editComment.trim().length < 1;
@@ -179,7 +183,7 @@ class Mainbar extends Component {
               <div>
                 {data.commentsId.length > 0 && data.commentsId.map((comment, cidx) => {
                   // if (data._id === this.state.opened) 
-                  return (<div key={cidx} className="m-3">
+                  return (comment.userId && <div key={cidx} className="m-3">
                     <div style={{ border: "1px #dee2e6 solid" }}>
                       <div className="border-bottom" style={{ display: 'flex', alignContent: 'center' }}>
                         <img className="rounded-circle m-2" src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg" style={{ width: "2rem" }} alt="Profile"></img>
@@ -246,9 +250,13 @@ class Mainbar extends Component {
                                       <img className="rounded-circle m-2" src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg" style={{ width: "2rem" }} alt="Profile"></img>
                                     </Link>
                                   </td>
-                                  <td><Link to={`/${likes._id}`} >{likes.name}</Link></td>
+
+                                  {/* <td><Link to={`/${likes._id}`} >{likes.name}</Link></td> */}
                                   {/* <td><button>Action</button></td> */}
-                                </tr>)}
+                                  <td onClick={() => { this.profilePage(likes) }}> <Link data-dismiss="modal" aria-label="Close" to={`/${likes._id}`} > {likes.name} </Link> </td>
+                                </tr>
+
+                                )}
                               </tbody>
                             </table>}
                           </div>
@@ -285,4 +293,5 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(Mainbar);
+// export default connect(mapStateToProps)(Mainbar);
+export default withRouter(connect(mapStateToProps)(Mainbar));
