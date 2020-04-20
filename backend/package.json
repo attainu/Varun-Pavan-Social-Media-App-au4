@@ -11,12 +11,14 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.21.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-mongo-sanitize": "^2.0.0",
     "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.7",
+    "request": "^2.88.2",
     "xss": "^1.0.6",
     "xss-clean": "^0.1.1"
   }

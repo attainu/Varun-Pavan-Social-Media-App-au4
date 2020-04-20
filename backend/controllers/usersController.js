@@ -3,6 +3,25 @@ const jwt = require('jsonwebtoken')
 const catchAsync = require('./../utils/catchAsync');
 const bcryptjs = require('bcryptjs')
 const AppError = require('./../utils/appError');
+const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
+const request = require('request');
+
+cloudinary.config({
+  cloud_name: 'dyhtwa8fn',
+  api_key: '567213951287329',
+  api_secret: 'aKDu7VbWNwVdVgp962-J4h4-PFY'
+});
+
+var download = function (uri, filename, callback) {
+  request.head(uri, function (err, res, body) {
+    // console.log('content-type:', res.headers['content-type']);
+    // console.log('content-length:', res.headers['content-length']);
+
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+  });
+};
+
 
 /***
  * Function Purpose - To get all users
@@ -209,4 +228,37 @@ exports.removeFollowerFollowing = catchAsync(async (req, res, next) => {
       follower: saveUserFollower
     }
   })
+});
+
+function imageUpload(imgname, req, res) {
+
+  cloudinary.uploader.upload(`${__dirname}/../public/images/${imgname}`, function (error, response) {
+    let { userId, type } = req.body;
+    console.log(response, userId);
+    let user;
+    if (type === 'cp')
+      user = User.updateOne({ _id: userId }, { $set: { coverPic: response.secure_url } });
+    else if (type === 'dp')
+      user = User.updateOne({ _id: userId }, { $set: { profilePic: response.secure_url } });
+    user.then(response => {
+      res.send({
+        status: 'success',
+      });
+    })
+    user.catch(err => console.log(err));
+    fs.unlinkSync(`${__dirname}/../public/images/${imgname}`);
+  })
+}
+
+exports.updateDP = catchAsync(async (req, res, next) => {
+  let { profilePic } = req.body;
+  var base64Data = profilePic.replace(/^data:image\/jpeg;base64,/, "");
+  var imgStamp = Date.now() + '.jpg';
+  // console.log(base64Data);
+  fs.writeFile(`${__dirname}/../public/images/${imgStamp}`, base64Data, 'base64', function (err) {
+    if (err) {
+      console.log(err);
+    }
+    imageUpload(imgStamp, req, res);
+  });
 });

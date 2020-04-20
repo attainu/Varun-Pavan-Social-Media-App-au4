@@ -14,8 +14,8 @@ app.use(cors())
 app.use(helmet());
 
 // Body parser, reading data from body into req.body
-app.use(express.json({ limit: '500kb' }));
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb' }));
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());

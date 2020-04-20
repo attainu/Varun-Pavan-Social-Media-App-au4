@@ -18,6 +18,10 @@ const User = mongoose.model('users', {
         type: String,
         default: ""
     },
+    coverPic: {
+        type: String,
+        default: ""
+    },
     phone: {
         type: Number,
         min: [999999999, 'Please provide a valid Mobile Number'],
