@@ -15,7 +15,7 @@ class Navbar extends Component {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          {!location && <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          {localStorage.getItem('token') && <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
                 <Link className="nav-link mr-3" to="/home">Home </Link>
@@ -28,6 +28,7 @@ class Navbar extends Component {
               <SearchBar />
               <button type="button" className="btn btn-outline-danger ml-5" onClick={() => {
                 localStorage.removeItem('token')
+                localStorage.removeItem('userId')
                 window.location.href = '/login'
               }}>Logout</button>
             </div>

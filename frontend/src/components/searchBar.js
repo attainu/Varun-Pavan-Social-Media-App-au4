@@ -18,7 +18,9 @@ class SearchBar extends Component {
     };
 
     componentDidMount = async () => {
-        let user = await axios.get(`http://localhost:3010/users`);
+        let user = await axios.get(`http://localhost:3010/users`, {
+            headers: { 'auth-token': localStorage.getItem('token') }
+        });
         this.setState({ usersList: user.data.data });
     };
 
@@ -49,14 +51,14 @@ class SearchBar extends Component {
             <>
                 {" "}
                 <span
-                    onClick={() =>
-                        this.props.dispatch({
-                            type: "SEARCH_PROFILE",
-                            payload: suggestion._id,
-                        })
-                    }
+                // onClick={() =>
+                //     this.props.dispatch({
+                //         type: "SEARCH_PROFILE",
+                //         payload: suggestion._id,
+                //     })
+                // }
                 >
-                    <Link to={`/search`}>
+                    <Link to={`/${suggestion._id}`}>
                         <img
                             className="mr-2"
                             alt="User"

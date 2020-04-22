@@ -2,7 +2,7 @@ import { createStore, combineReducers } from "redux";
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 
 let initialState = {
-  userId: "5e88f56e7eba1e1c792efb5a",
+  userId: localStorage.getItem('userId'),
   active: 'posts',
   loggedIn: {},
   viewData: {
@@ -23,6 +23,10 @@ function appReducer(state = initialState, action) {
 
     case "viewUser":
       stateCopy.viewData = action.payload;
+      return stateCopy;
+
+    case "LOGIN":
+      stateCopy.userId = action.payload.data.data._id;
       return stateCopy;
 
     default:

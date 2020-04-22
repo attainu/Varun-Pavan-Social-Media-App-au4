@@ -7,6 +7,7 @@ import ImageCropper from './imageCropper';
 import "./Profile.css";
 import Mainbar from "./Mainbar";
 import LeftProfileBar from "./LeftProfileBar";
+import { Redirect } from 'react-router-dom'
 
 class Profile extends Component {
   state = {
@@ -24,7 +25,9 @@ class Profile extends Component {
 
   getUser = () => {
     axios
-      .get(`http://localhost:3010/users/user?id=${this.props.match.params.id}`)
+      .get(`http://localhost:3010/users/user?id=${this.props.match.params.id}`, {
+        headers: { 'auth-token': localStorage.getItem('token') }
+      })
       .then((res) => {
         console.log(res, "data");
         this.setState({
@@ -45,6 +48,8 @@ class Profile extends Component {
             params: {
               id: this.props.match.params.id,
             },
+          }, {
+            headers: { 'auth-token': localStorage.getItem('token') }
           })
           .then((res) => {
             this.setState({
@@ -93,6 +98,9 @@ class Profile extends Component {
   }
 
   render() {
+    if (!localStorage.getItem('token')) {
+      return <Redirect to='/login' />
+    }
     let colorBlue = {
       color: "orange",
       backgroundColor: "black",

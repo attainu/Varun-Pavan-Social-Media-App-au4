@@ -18,28 +18,32 @@ class Mainbar extends Component {
     postsByUser: [],
     postComment: "",
     editComment: "",
-    userId: "5e88f56e7eba1e1c792efb5a",
-    opened: "",
     // userId: "5e88f56e7eba1e1c792efb5a",
+    opened: "",
+    userId: this.props.userId,
     title: "",
     modalData: [],
     showUsersModal: false,
   };
   getPosts = () => {
+    console.log(localStorage.getItem('token'))
     let posts = axios.get(
-      `http://localhost:3010/posts/sortedPosts/${this.state.userId}`
+      `http://localhost:3010/posts/sortedPosts/${this.state.userId}`, {
+      headers: { 'auth-token': localStorage.getItem('token') }
+    }
     );
     posts.then((res) => {
       // console.log(res.data.data);
       this.setState({
         posts: res.data.data,
-        opened: res.data.data[0]._id,
       });
     });
   };
 
   getUser = () => {
-    let user = axios.get(`http://localhost:3010/users/${this.state.userId}`);
+    let user = axios.get(`http://localhost:3010/users/${this.state.userId}`, {
+      headers: { 'auth-token': localStorage.getItem('token') }
+    });
     user.then((res) => {
       this.setState({
         likedPosts: res.data.data.likedPosts,
@@ -58,7 +62,9 @@ class Mainbar extends Component {
       postId: id,
       userId: this.state.userId,
     };
-    await axios.put("http://localhost:3010/posts/like", data);
+    await axios.put("http://localhost:3010/posts/like", data, {
+      headers: { 'auth-token': localStorage.getItem('token') }
+    });
     this.getUser();
     this.getPosts();
   };
@@ -68,7 +74,9 @@ class Mainbar extends Component {
       postId: id,
       userId: this.state.userId,
     };
-    await axios.put("http://localhost:3010/posts/unlike", data);
+    await axios.put("http://localhost:3010/posts/unlike", data, {
+      headers: { 'auth-token': localStorage.getItem('token') }
+    });
     this.getUser();
     this.getPosts();
   };
@@ -82,7 +90,9 @@ class Mainbar extends Component {
       commentId,
       postComment: this.state.editComment,
     };
-    await axios.put("http://localhost:3010/comments", data);
+    await axios.put("http://localhost:3010/comments", data, {
+      headers: { 'auth-token': localStorage.getItem('token') }
+    });
     this.getPosts();
     this.setState({ editComment: "" });
   };
@@ -93,7 +103,9 @@ class Mainbar extends Component {
       postId: id,
       postComment: this.state.postComment,
     };
-    await axios.post("http://localhost:3010/comments", data);
+    await axios.post("http://localhost:3010/comments", data, {
+      headers: { 'auth-token': localStorage.getItem('token') }
+    });
     this.setState({ postComment: "" });
     this.getPosts();
     document.getElementById(idx).value = "";
@@ -106,10 +118,15 @@ class Mainbar extends Component {
       commentId,
       postId,
     };
-    await axios.delete("http://localhost:3010/comments", { data });
+    await axios.delete("http://localhost:3010/comments", {
+      headers: { 'auth-token': localStorage.getItem('token') }
+      , data
+    });
     this.getPosts();
     let user = axios.get(
-      "http://localhost:3010/users/5e931261f6539324ecbe4576"
+      "http://localhost:3010/users/" + this.state.userId, {
+      headers: { 'auth-token': localStorage.getItem('token') }
+    }
     );
     user.then((res) => {
       // console.log("user", res.data.data.likedPosts);
@@ -264,7 +281,7 @@ class Mainbar extends Component {
                     data.commentsId.map((comment, cidx) => {
                       // if (data._id === this.state.opened)
                       return (
-                        <div key={cidx} className="m-3">
+                        comment.userId && <div key={cidx} className="m-3">
                           <div style={{ border: "1px #dee2e6 solid" }}>
                             <div
                               className="border-bottom"

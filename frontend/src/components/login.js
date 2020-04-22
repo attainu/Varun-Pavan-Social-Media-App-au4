@@ -5,7 +5,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,24 +15,13 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import "./login.css";
 import { connect } from "react-redux";
+import { Redirect } from 'react-router-dom'
 let mapStateToProps = (state) => {
     return {
         state: state.profile,
     };
 };
 
-function Copyright() {
-    return (
-        <Typography variant="body2" color="white" align="center">
-            {"Copyright © "}
-            <Link color="inherit" href="/">
-                Social Media
-      </Link>{" "}
-            {new Date().getFullYear()}
-            {"."}
-        </Typography>
-    );
-}
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -98,16 +86,21 @@ function SignIn(props) {
             return handleClick();
         }
         localStorage.setItem("token", user.data.token);
-        window.location.href = "/home";
-        props.dispatch({
-            type: "CURRENT_USER",
-            payload: user,
-        });
-        props.dispatch({
-            type: "LOGIN",
-            payload: "LOGIN CLICKED",
-        });
+        // window.location.href = "/home";
+        // props.dispatch({
+        //     type: "CURRENT_USER",
+        //     payload: user,
+        // });
+        localStorage.setItem('userId', user.data.data._id)
+        // props.dispatch({
+        //     type: "LOGIN",
+        //     payload: user,
+        // });
+        return <Redirect to='/home' />
     };
+    if (localStorage.getItem('token')) {
+        return <Redirect to='/home' />
+    }
     return (
         <>
             <Container component="main" maxWidth="xs" className="mt-5 pb-5 login">
@@ -190,11 +183,6 @@ function SignIn(props) {
                     </form>
                 </div>
             </Container>
-            <footer className="footer pb-2">
-                <Box mt={3}>
-                    <Copyright />
-                </Box>
-            </footer>
         </>
     );
 }

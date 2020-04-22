@@ -117,9 +117,11 @@ exports.loginUser = catchAsync(async (req, res, next) => {
 
   //Decrypt password
   let validPassword = await bcryptjs.compare(password, user.password);
-  validPassword = true;
+  // validPassword = true;
   if (validPassword) {
-    const token = jwt.sign({ _id: user._id }, 'secretkey', { expiresIn: "200s" })
+    const token = jwt.sign({ _id: user._id }, 'secretkey',
+      // { expiresIn: "1h" }
+    )
     res.header('auth-token', token).json({
       status: true,
       data: user,

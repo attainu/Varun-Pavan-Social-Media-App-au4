@@ -14,7 +14,7 @@ import Radio from "@material-ui/core/Radio";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import "./signup.css";
-
+import { Redirect } from 'react-router-dom'
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(8),
@@ -100,6 +100,9 @@ export default function SignUp() {
         handleClick();
         setTimeout(() => (window.location.href = "/login"), 7000);
     };
+    if (localStorage.getItem('token')) {
+        return <Redirect to='/home' />
+    }
     return (
         <Container component="main" maxWidth="xs" className="mt-3 pb-3 signup">
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>

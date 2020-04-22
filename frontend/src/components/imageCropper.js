@@ -96,6 +96,8 @@ class imageCropper extends Component {
       profilePic: this.state.croppedImageUrl,
       userId: this.props.userId,
       type: this.props.type
+    }, {
+      headers: { 'auth-token': localStorage.getItem('token') }
     }).then(() => this.props.showImage());
   }
 

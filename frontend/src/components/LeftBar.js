@@ -3,6 +3,13 @@ import axios from "axios";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
+const mapStateToProps = (state) => {
+  return {
+    userId: state.app.userId,
+
+  };
+};
+
 class LeftBar extends Component {
   state = {
     data: {},
@@ -11,9 +18,12 @@ class LeftBar extends Component {
   componentDidMount() {
     // let data = axios.get('http://localhost:3010/users/5e88f56e7eba1e1c792efb5a');
     let data = axios.get(
-      "http://localhost:3010/users/5e88f56e7eba1e1c792efb5a"
+      "http://localhost:3010/users/" + this.props.userId, {
+      headers: { 'auth-token': localStorage.getItem('token') }
+    }
     );
     data.then((res) => {
+      console.log(res)
       this.setState({
         data: res.data.data,
         dataReceived: true,
@@ -47,8 +57,6 @@ class LeftBar extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {};
-};
+
 
 export default connect(mapStateToProps)(LeftBar);
