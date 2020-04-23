@@ -3,13 +3,12 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Link as Rlink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
@@ -80,23 +79,15 @@ function SignIn(props) {
             email,
             password,
         });
-        console.log(user.data);
+        // console.log(user.data);
         // console.log(user.data.token);
         if (!user.data.status) {
             return handleClick();
         }
         localStorage.setItem("token", user.data.token);
-        // window.location.href = "/home";
-        // props.dispatch({
-        //     type: "CURRENT_USER",
-        //     payload: user,
-        // });
         localStorage.setItem('userId', user.data.data._id)
-        // props.dispatch({
-        //     type: "LOGIN",
-        //     payload: user,
-        // });
-        return <Redirect to='/home' />
+        return window.location.href = "/home";
+
     };
     if (localStorage.getItem('token')) {
         return <Redirect to='/home' />
@@ -166,18 +157,18 @@ function SignIn(props) {
                             onClick={submitHandler}
                             disabled={!disable}
                         >
-                            <Rlink> Sign In</Rlink>
+                            <Link> Sign In</Link>
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
+                                <Link to='/reset' variant="body2">
+                                    Forgot/Reset password?
                 </Link>
                             </Grid>
                             <Grid item>
-                                <Rlink to="/signup" variant="body2">
+                                <Link to="/signup" variant="body2">
                                     {"Don't have an account? Sign Up"}
-                                </Rlink>
+                                </Link>
                             </Grid>
                         </Grid>
                     </form>

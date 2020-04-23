@@ -86,19 +86,39 @@ exports.getOneUser = catchAsync(async (req, res, next) => {
 });
 
 /***
+ * Function Purpose - Reset Password
+ * URL - /users/reset
+ * req.body - { email, securityQuestion, securityAnswer, password }
+ * ***/
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  let { email, securityQuestion, securityAnswer, password } = req.body
+  let user = await User.findOne({ email, securityAnswer, securityQuestion });
+  if (user) {
+    let salt = await bcryptjs.genSalt(10);
+    let hashPassword = await bcryptjs.hash(password, salt)
+    user.password = hashPassword;
+    await user.save()
+    return res.json(true)
+  }
+  return res.json(false)
+});
+
+
+/***
  * Function Purpose - Create a new user and save in the database
  * URL - /users/signup
  * req.body - { name, email, phone, password, gender, location }
  * ***/
 
 exports.createUser = catchAsync(async (req, res, next) => {
-  let { name, email, phone, password, gender, location, bio } = req.body;
+  let { name, email, phone, password, gender, location, bio, securityQuestion, securityAnswer } = req.body;
 
   //Encrypt password
   let salt = await bcryptjs.genSalt(10);
   let hashPassword = await bcryptjs.hash(password, salt)
 
-  let user = await User.create({ name, email, phone, password: hashPassword, gender, location, bio });
+  let user = await User.create({ name, email, phone, password: hashPassword, gender, location, bio, securityQuestion, securityAnswer });
   res.json({
     status: true,
     data: user

@@ -292,7 +292,7 @@ class Mainbar extends Component {
                             >
                               <img
                                 className="rounded-circle m-2"
-                                src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"
+                                src={`${comment.userId.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"}`}
                                 style={{ width: "2rem" }}
                                 alt="Profile"
                               ></img>
@@ -478,33 +478,24 @@ class Mainbar extends Component {
                                     <table className="table">
                                       <tbody>
                                         {this.state.modalData.map(
-                                          (likes, idx) => (
-                                            <tr key={idx}>
+
+                                          (likes, idx) => {
+                                            return (<tr key={idx}>
                                               <td>
                                                 <Link to={`/${likes._id}`}>
-                                                  <img
-                                                    className="rounded-circle m-2"
-                                                    src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"
-                                                    style={{ width: "2rem" }}
-                                                    alt="Profile"
-                                                  ></img>
+                                                  <img className="rounded-circle m-2" src={`${likes.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"}`} style={{ width: "2rem" }} alt="Profile"></img>
                                                 </Link>
                                               </td>
                                               <td onClick={() => {
-                                                this.profilePage(likes)
+                                                this.profilePage(likes);
                                               }}>
-                                                <Link
-
-                                                  data-dismiss="modal"
-                                                  aria-label="Close"
-                                                  to={`/${likes._id}`}
-                                                >
+                                                <Link data-dismiss="modal" aria-label="Close" to={`/${likes._id}`}>
                                                   {likes.name}
                                                 </Link>
                                               </td>
-                                              {/* <td><button>Action</button></td> */}
-                                            </tr>
-                                          )
+
+                                            </tr>);
+                                          }
                                         )}
                                       </tbody>
                                     </table>

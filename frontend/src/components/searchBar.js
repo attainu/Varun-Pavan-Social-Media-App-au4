@@ -47,6 +47,7 @@ class SearchBar extends Component {
     };
 
     renderSuggestion = (suggestion) => {
+        console.log(suggestion)
         return (
             <>
                 {" "}
@@ -62,7 +63,7 @@ class SearchBar extends Component {
                         <img
                             className="mr-2"
                             alt="User"
-                            src="https://conferenceoeh.com/wp-content/uploads/profile-dummy-girl.jpg"
+                            src={`${suggestion.profilePic || "https://conferenceoeh.com/wp-content/uploads/profile-dummy-girl.jpg"}`}
                             style={{ height: "30px", width: "30px", borderRadius: "50%" }}
                         />{" "}
                         {suggestion.name}

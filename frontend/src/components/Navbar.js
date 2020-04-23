@@ -21,7 +21,7 @@ class Navbar extends Component {
                 <Link className="nav-link mr-3" to="/home">Home </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link mr-5" to="/profile">Profile</Link>
+                <Link className="nav-link mr-5" to={`/${this.props.userId}`}>Profile</Link>
               </li>
             </ul>
             <div className="form-inline my-2 my-lg-0">
@@ -41,7 +41,7 @@ class Navbar extends Component {
 }
 let mapsStateToProps = (state) => {
   return {
-    state: state.auth
+    userId: state.app.userId,
   }
 }
 export default connect(mapsStateToProps)(Navbar);

@@ -31,6 +31,14 @@ const User = mongoose.model('users', {
         type: String,
         required: true
     },
+    securityQuestion: {
+        type: String,
+        required: true
+    },
+    securityAnswer: {
+        type: String,
+        required: true
+    },
     location: {
         type: String,
     },

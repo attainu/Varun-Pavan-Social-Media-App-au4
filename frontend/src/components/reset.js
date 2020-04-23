@@ -10,7 +10,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { Link as Rlink } from "react-router-dom";
 import axios from "axios";
-import Radio from "@material-ui/core/Radio";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import FormControl from '@material-ui/core/FormControl';
@@ -59,17 +58,14 @@ export default function SignUp() {
         "What street did you grow up on?"
     ]
     const classes = useStyles();
-    const [name, newName] = useState("");
     const [email, newEmail] = useState("");
     const [password, newPassword] = useState("");
     const [cpassword, cnewPassword] = useState("");
-    const [selectedValue, setSelectedValue] = useState("male");
     const [open, setOpen] = useState(false);
     const [alertText, updatedAlertText] = useState("");
     const [severity, newSeverity] = useState("");
     const [question, selectedQuestion] = useState("")
     const [answer, selectedAnswer] = useState("")
-    console.log(question)
 
     const handleClick = () => {
         setOpen(true);
@@ -81,7 +77,6 @@ export default function SignUp() {
 
         setOpen(false);
     };
-    let nameValidation = name.length < 3;
     let emailValidation =
         !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
             email
@@ -93,7 +88,6 @@ export default function SignUp() {
     let answerValidation = answer.trim().length < 3
     let cpasswordValidation = password === cpassword;
     let disable =
-        !nameValidation &&
         !emailValidation &&
         !passwordValidation &&
         cpasswordValidation &&
@@ -102,29 +96,30 @@ export default function SignUp() {
         ;
 
     const submitHandler = async () => {
-        let isExists = await axios.post("http://localhost:3010/users/signup/find", {
-            email,
-        });
-        updatedAlertText(
-            isExists.data
-                ? "Email already Exists"
-                : "Profile created Successfully..! You will be redirected to the login page."
-        );
-        newSeverity(isExists.data ? "error" : "success");
-        if (isExists.data) {
-            return handleClick();
-        }
-        let gender = selectedValue;
+
         let securityAnswer = answer.trim().toLocaleLowerCase()
         let securityQuestion = question
-        await axios.post("http://localhost:3010/users/signup", {
-            name,
+        let isExists = await axios.post("http://localhost:3010/users/reset", {
             email,
-            password,
-            gender,
             securityQuestion,
-            securityAnswer
+            securityAnswer,
+            password
         });
+        updatedAlertText(
+            !isExists.data
+                ? "Answer Doesn't Match"
+                : "Password reset Successfull..! You will be redirected to the login page."
+        );
+        newSeverity(!isExists.data ? "error" : "success");
+        if (!isExists.data) {
+            return handleClick();
+        }
+        // await axios.put("http://localhost:3010/users/reset", {
+        //     email,
+        //     password,
+        //     securityQuestion,
+        //     securityAnswer
+        // });
         handleClick();
         setTimeout(() => (window.location.href = "/login"), 7000);
     };
@@ -144,30 +139,10 @@ export default function SignUp() {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Sign up
+                    Reset Password
         </Typography>
                 <form className={classes.form} noValidate>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                autoComplete="name"
-                                name="name"
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="name"
-                                label="Name"
-                                value={name}
-                                onChange={(e) => newName(e.target.value)}
-                                error={nameValidation && name.length !== 0}
-                                helperText={
-                                    nameValidation && name.length !== 0
-                                        ? "*Name must be of three or more characters"
-                                        : null
-                                }
-                                autoFocus
-                            />
-                        </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 variant="outlined"
@@ -225,24 +200,6 @@ export default function SignUp() {
                                 }
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <span>Male</span>{" "}
-                            <Radio
-                                checked={selectedValue === "male"}
-                                onChange={(e) => setSelectedValue(e.target.value)}
-                                value="male"
-                                name="radio-button-demo"
-                                inputProps={{ "aria-label": "A" }}
-                            />
-                            <span>Female</span>{" "}
-                            <Radio
-                                checked={selectedValue === "female"}
-                                onChange={(e) => setSelectedValue(e.target.value)}
-                                value="female"
-                                name="radio-button-demo"
-                                inputProps={{ "aria-label": "B" }}
-                            />{" "}
-                        </Grid>
                         <Grid>
                             <FormControl required className={classes.formControl}>
                                 <p>Security Question</p>
@@ -287,7 +244,7 @@ export default function SignUp() {
                         onClick={submitHandler}
                         disabled={!disable}
                     >
-                        Sign Up
+                        Reset
           </Button>
                     <Grid container justify="flex-end">
                         <Grid item>
