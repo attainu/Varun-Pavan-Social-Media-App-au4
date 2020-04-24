@@ -50,25 +50,19 @@ class SearchBar extends Component {
         console.log(suggestion)
         return (
             <>
-                {" "}
-                <span
-                // onClick={() =>
-                //     this.props.dispatch({
-                //         type: "SEARCH_PROFILE",
-                //         payload: suggestion._id,
-                //     })
-                // }
-                >
-                    <Link to={`/${suggestion._id}`}>
-                        <img
-                            className="mr-2"
-                            alt="User"
-                            src={`${suggestion.profilePic || "https://conferenceoeh.com/wp-content/uploads/profile-dummy-girl.jpg"}`}
-                            style={{ height: "30px", width: "30px", borderRadius: "50%" }}
-                        />{" "}
-                        {suggestion.name}
-                    </Link>
-                </span>
+                <table className='table'>
+                    <tbody>
+                        <tr>   <td><Link to={`/${suggestion._id}`}>
+                            <img
+                                alt="User"
+                                src={`${suggestion.profilePic || "https://conferenceoeh.com/wp-content/uploads/profile-dummy-girl.jpg"}`}
+                                style={{ height: "30px", width: "30px", borderRadius: "50%" }}
+                            /></Link></td>
+
+                            <td>  <Link to={`/${suggestion._id}`}>{suggestion.name}</Link></td>
+                        </tr>
+                    </tbody>
+                </table>
             </>
         );
     };

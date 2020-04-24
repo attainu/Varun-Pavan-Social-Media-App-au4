@@ -3,37 +3,43 @@ import './Navbar.css';
 import SearchBar from './searchBar'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-
+import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
+import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
+import { FiLogOut } from 'react-icons/fi';
 class Navbar extends Component {
   render() {
     let location = window.location.pathname === '/signup' || window.location.pathname === '/login';
     return (
-      <header>
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <Link className="navbar-brand" to="/signup" title="Home">Social Media</Link>
-          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
+      <header style={{ borderBottom: "1px solid black" }}>
+        <nav className="navbar navbar-expand-sm navbar-dark justify-content-end">
 
-          {localStorage.getItem('token') && <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link className="nav-link mr-3" to="/home">Home </Link>
+          <Link className="navbar-brand mr-auto logo" to="/signup" title="Home" style={{ "color": "black" }}>Social Media</Link>
+
+          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+            <span className="navbar-toggler-icon bg-dark"></span>
+          </button>
+          {localStorage.getItem('token') && !location && <div className="collapse navbar-collapse flex-grow-0" id="navbarSupportedContent">
+            <ul className="navbar-nav text-right">
+              <li className="nav-item mr-3">
+                <Link className="nav-link " to="/home" title='Home'><HomeRoundedIcon fontSize="large" style={{ color: "black" }} /> </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link mr-5" to={`/${this.props.userId}`}>Profile</Link>
+              <li className="nav-item mr-3">
+                <Link className="nav-link " to={`/${this.props.userId}`} title='Profile'>
+                  <PersonRoundedIcon fontSize="large" style={{ color: "black" }} />
+                </Link>
+              </li>
+              <li className="nav-item mr-3 mt-2 ">
+                <SearchBar />
+              </li>
+              <li className="nav-item mr-3 mt-1 ">
+                <Link title='Logout' onClick={() => {
+                  localStorage.removeItem('token')
+                  localStorage.removeItem('userId')
+                  window.location.href = '/login'
+                }}><h3><FiLogOut style={{ color: "black" }} /></h3></Link>
               </li>
             </ul>
-            <div className="form-inline my-2 my-lg-0">
-              <SearchBar />
-              <button type="button" className="btn btn-outline-danger ml-5" onClick={() => {
-                localStorage.removeItem('token')
-                localStorage.removeItem('userId')
-                window.location.href = '/login'
-              }}>Logout</button>
-            </div>
           </div>}
-          <hr />
         </nav>
       </header>
     )

@@ -18,6 +18,7 @@ class Mainbar extends Component {
     postsByUser: [],
     postComment: "",
     editComment: "",
+    editCommentId: '',
     // userId: "5e88f56e7eba1e1c792efb5a",
     opened: "",
     userId: this.props.userId,
@@ -84,17 +85,17 @@ class Mainbar extends Component {
     this.setState({ opened });
   };
 
-  editHandler = async (commentId) => {
+  editHandler = async () => {
     let data = {
       userId: this.state.userId,
-      commentId,
+      commentId: this.state.editCommentId,
       postComment: this.state.editComment,
     };
     await axios.put("http://localhost:3010/comments", data, {
       headers: { 'auth-token': localStorage.getItem('token') }
     });
     this.getPosts();
-    this.setState({ editComment: "" });
+    this.setState({ editComment: "", editCommentId: "" });
   };
 
   commentHandler = async (id, idx) => {
@@ -325,10 +326,13 @@ class Mainbar extends Component {
                                   className="btn"
                                   data-toggle="modal"
                                   data-target="#exampleModalCenter"
-                                  onClick={() =>
+                                  onClick={() => {
+                                    console.log(comment._id)
                                     this.setState({
                                       editComment: comment.comment,
+                                      editCommentId: comment._id
                                     })
+                                  }
                                   }
                                 >
                                   <EditIcon />
@@ -387,7 +391,7 @@ class Mainbar extends Component {
                                     <span
                                       aria-hidden="true"
                                       onClick={() =>
-                                        this.setState({ editComment: "" })
+                                        this.setState({ editComment: "", editCommentId: "" })
                                       }
                                     >
                                       &times;
@@ -414,7 +418,7 @@ class Mainbar extends Component {
                                     className="btn btn-secondary"
                                     data-dismiss="modal"
                                     onClick={() =>
-                                      this.setState({ editComment: "" })
+                                      this.setState({ editComment: "", editCommentId: "" })
                                     }
                                   >
                                     Close
@@ -423,8 +427,9 @@ class Mainbar extends Component {
                                     type="button"
                                     className="btn btn-primary"
                                     disabled={editCommentAuth}
-                                    onClick={() =>
-                                      this.editHandler(comment._id)
+                                    onClick={() => {
+                                      this.editHandler()
+                                    }
                                     }
                                     data-dismiss="modal"
                                   >
