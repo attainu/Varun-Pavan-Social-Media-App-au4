@@ -11,9 +11,9 @@ class Navbar extends Component {
     let location = window.location.pathname === '/signup' || window.location.pathname === '/login';
     return (
       <header style={{ borderBottom: "1px solid black" }}>
-        <nav className="navbar navbar-expand-sm navbar-dark justify-content-end">
+        <nav className="navbar navbar-expand-sm navbar-dark justify-content-end" style={{ backgroundColor: "#e0e0e0" }}>
 
-          <Link className="navbar-brand mr-auto logo" to="/signup" title="Home" style={{ "color": "black" }}>Social Media</Link>
+          <Link className="navbar-brand mr-auto logo" to="/signup" title="Home" >Social Media</Link>
 
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
             <span className="navbar-toggler-icon bg-dark"></span>
@@ -32,7 +32,7 @@ class Navbar extends Component {
                 <SearchBar />
               </li>
               <li className="nav-item mr-3 mt-1 ">
-                <Link title='Logout' onClick={() => {
+                <Link title='Logout' to="" onClick={() => {
                   localStorage.removeItem('token')
                   localStorage.removeItem('userId')
                   window.location.href = '/login'

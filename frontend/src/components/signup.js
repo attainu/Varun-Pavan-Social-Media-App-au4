@@ -69,7 +69,6 @@ export default function SignUp() {
     const [severity, newSeverity] = useState("");
     const [question, selectedQuestion] = useState("")
     const [answer, selectedAnswer] = useState("")
-    console.log(question)
 
     const handleClick = () => {
         setOpen(true);

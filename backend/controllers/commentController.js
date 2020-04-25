@@ -20,10 +20,8 @@ exports.createComment = catchAsync(async (req, res, next) => {
 });
 
 exports.updateComment = catchAsync(async (req, res, next) => {
-    console.log(req.body)
     let { userId, commentId, postComment } = req.body;
     let comment = await Comment.update({ _id: commentId, userId }, { $set: { comment: postComment } });
-    console.log(comment)
     res.status(201).json({
         status: true,
         msg: "comment updated",

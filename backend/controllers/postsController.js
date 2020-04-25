@@ -138,7 +138,7 @@ exports.likePost = catchAsync(async (req, res) => {
       msg: "Post already liked"
     })
   }
-  let user = await User.findById(userId);
+  let user = await User.findOne({ _id: userId });
   post.liked.push(userId);
   user.likedPosts.push(postId);
   let userSaved = await user.save();

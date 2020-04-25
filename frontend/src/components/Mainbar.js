@@ -27,7 +27,6 @@ class Mainbar extends Component {
     showUsersModal: false,
   };
   getPosts = () => {
-    console.log(localStorage.getItem('token'))
     let posts = axios.get(
       `http://localhost:3010/posts/sortedPosts/${this.state.userId}`, {
       headers: { 'auth-token': localStorage.getItem('token') }

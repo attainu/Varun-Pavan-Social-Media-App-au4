@@ -47,19 +47,18 @@ class SearchBar extends Component {
     };
 
     renderSuggestion = (suggestion) => {
-        console.log(suggestion)
         return (
             <>
                 <table className='table'>
                     <tbody>
-                        <tr>   <td><Link to={`/${suggestion._id}`}>
+                        <tr><td><Link to={`/${suggestion._id}`}>
                             <img
                                 alt="User"
                                 src={`${suggestion.profilePic || "https://conferenceoeh.com/wp-content/uploads/profile-dummy-girl.jpg"}`}
                                 style={{ height: "30px", width: "30px", borderRadius: "50%" }}
                             /></Link></td>
 
-                            <td>  <Link to={`/${suggestion._id}`}>{suggestion.name}</Link></td>
+                            <td><Link to={`/${suggestion._id}`}>{suggestion.name}</Link></td>
                         </tr>
                     </tbody>
                 </table>
