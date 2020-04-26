@@ -25,15 +25,16 @@ class Navbar extends Component {
                 <Link className="nav-link " to="/home" title='Home'><HomeRoundedIcon fontSize="large" style={{ color: "black" }} /> </Link>
               </li>
               <li className="nav-item mr-3">
-                <Link className="nav-link " to={`/${this.props.userId}`} title='Profile'>
-                  <PersonRoundedIcon fontSize="large" style={{ color: "black" }} />
-                </Link>
-              </li>
-              <li className="nav-item mr-3">
                 <Link className="nav-link " to='/explore' title='Explore'>
                   <ExploreIcon fontSize="large" style={{ color: "black" }} />
                 </Link>
               </li>
+              <li className="nav-item mr-3">
+                <Link className="nav-link " to={`/${this.props.userId}`} title='Profile'>
+                  <PersonRoundedIcon fontSize="large" style={{ color: "black" }} />
+                </Link>
+              </li>
+
               <li className="nav-item mr-3 mt-2 ">
                 <SearchBar />
               </li>

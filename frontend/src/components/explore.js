@@ -57,11 +57,11 @@ class Explore extends Component {
                     {this.state.allUser.length > 0 && this.state.allUser.map((user, idx) => {
 
                         return (
-                            (user._id !== localStorage.getItem('userId')) && <div className="card" style={{ width: "18rem" }}>
-                                <Link to={`/${user._id}`} style={{ textDecoration: 'none', color: "black" }}>   <img className="card-img-top" src={user.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"} alt="Card image cap" /></Link>
+                            (user._id !== localStorage.getItem('userId')) && <div key={idx} className="card" style={{ width: "15rem" }}>
+                                <Link to={`/${user._id}`} style={{ textDecoration: 'none', color: "black" }}>   <img className="card-img-top" src={user.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"} alt="" /></Link>
                                 <div className="card-body">
-                                    <p className="card-text text-weight-bold"><Link to={`/${user._id}`} style={{ textDecoration: 'none', color: "black" }}><h5>{user.name}</h5></Link></p>
-                                    <p><h6>{user.email}</h6></p>
+                                    < Link to={`/${user._id}`} className="card-text text-weight-bold" style={{ textDecoration: 'none', color: "black" }}><h5>{user.name}</h5></Link>
+                                    <h6>{user.email}</h6>
                                 </div>
                                 <div>
                                     {

@@ -15,7 +15,12 @@
 .main {
   flex: 1;
 }
-
+header{
+  z-index: 2;
+}
+main{
+  z-index: 1;
+}
 .App-link {
   color: #61dafb;
 }

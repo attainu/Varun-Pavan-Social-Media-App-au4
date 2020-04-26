@@ -14,7 +14,7 @@
     .explore{   
         display: grid;
         grid-template-columns: repeat(auto-fill, 350px);
-        justify-content: center;
+        justify-content: space-evenly;
        }   
        .card{
             margin-right:10px ;
