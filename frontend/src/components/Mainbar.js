@@ -4,12 +4,15 @@ import { connect } from "react-redux";
 import moment from 'moment'
 import { Favorite, FavoriteBorder } from '@material-ui/icons';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
+import { FaImage } from "react-icons/fa";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
-
 import "./Mainbar.css";
+
+const url = 'https://api.cloudinary.com/v1_1/dyhtwa8fn/image/upload';
+const preset = 'pv9m8ygk';
 
 class Mainbar extends Component {
   state = {
@@ -25,7 +28,10 @@ class Mainbar extends Component {
     title: "",
     modalData: [],
     showUsersModal: false,
+    postText: "",
+    postImage: "",
   };
+
   getPosts = () => {
     let posts = axios.get(
       `http://localhost:3010/posts/sortedPosts/${this.state.userId}`, {
@@ -33,7 +39,7 @@ class Mainbar extends Component {
     }
     );
     posts.then((res) => {
-      // console.log(res.data.data);
+      // res.data.data.sort((posts1, posts2) => { console.log(posts1.dateCreated > posts2.dateCreated, posts1.dateCreated, posts2.dateCreated); return posts1.dateCreated > posts2.dateCreated ? 1 : -1 });
       this.setState({
         posts: res.data.data,
       });
@@ -149,10 +155,73 @@ class Mainbar extends Component {
     this.props.history.push(url._id);
   }
 
+  uploadPost = async () => {
+    try {
+      let res;
+      let imageUrl = "";
+      if (this.state.postImage) {
+        const formData = new FormData();
+        formData.append('file', this.state.postImage);
+        formData.append('upload_preset', preset);
+        res = await axios.post(url, formData);
+        imageUrl = res.data.secure_url;
+        console.log(imageUrl);
+      }
+      let post = await axios.post(`http://localhost:3010/posts/${this.props.userId}`, {
+        type: "text",
+        userId: this.props.userId,
+        data: this.state.postText,
+        image: imageUrl ? imageUrl : ""
+      }, {
+        headers: { 'auth-token': localStorage.getItem('token') }
+      })
+      this.getPosts();
+      this.setState({
+        postText: "",
+        postImage: ""
+      })
+    } catch (error) {
+
+    }
+  }
+
+  handlePostTextData = (value) => {
+    this.setState({
+      postText: value
+    });
+  }
+
+  chooseFile(type) {
+    this.inputElement.click();
+  }
+
+  onSelectFile = e => {
+    this.setState({
+      postImage: e.target.files[0]
+    });
+  }
+
+  deletePost = async (id) => {
+    try {
+      console.log(id);
+      let del = await axios.delete(`http://localhost:3010/posts/`, {
+        data: {
+          _id: id,
+          userId: this.props.userId
+        }
+      });
+      this.getPosts();
+    } catch (error) {
+
+    }
+  }
+
   render() {
+    console.log(localStorage.getItem('token'));
     let commentAuth = this.state.postComment.trim().length < 1;
     let editCommentAuth = this.state.editComment.trim().length < 1;
-    let posts;
+    console.log(this.props);
+    let posts, viewUser = this.props.match.params.id === this.props.userId || this.props.match.path === '/home';
     if (this.props.posts) posts = this.props.posts;
     else posts = this.state.posts;
     return (
@@ -160,46 +229,82 @@ class Mainbar extends Component {
         className="pt-5 px-2 px-md-0 mx-md-auto mx-lg-auto posts"
         style={{ width: "60vw", overflowY: "scroll", height: "95vh" }}
       >
-        <div className="form-group border">
-          <label
-            className="p-2 px-3 mb-0"
-            style={{ width: "100%", backgroundColor: "#dedcdc" }}
-          >
-            Create post
+        {viewUser && (
+          <div className="form-group border">
+            <label
+              className="p-2 px-3 mb-0"
+              style={{ width: "100%", backgroundColor: "#dedcdc" }}
+            >
+              Create post
           </label>
-          <textarea
-            className="form-control"
-            id="exampleFormControlTextarea1"
-            rows="4"
-            placeholder="Write Something Here"
-          />
-          <button className="btn btn-primary ml-auto mt-2">Post</button>
-        </div>
+            <textarea
+              className="form-control"
+              id="exampleFormControlTextarea1"
+              rows="4"
+              value={this.state.postText}
+              onChange={(event) => this.handlePostTextData(event.target.value)}
+              placeholder="Write Something Here"
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end"
+              }}
+            >
+              <FaImage size={40}
+                className="mx-2"
+                onClick={() => this.chooseFile()}
+              />
+              <button
+                onClick={() => this.uploadPost()}
+                className="btn btn-primary">Post</button>
+            </div>
+            <input
+              className="d-none"
+              ref={(input) => (this.inputElement = input)}
+              type="file"
+              accept="image/*"
+              onChange={this.onSelectFile}
+            />
+          </div>
+        )}
         {posts.length &&
           posts.map((data, idx) => {
             return (
               <div key={idx} className="border mb-3">
                 <div
                   className="border-bottom"
-                  style={{ display: "flex", alignContent: "center" }}
+                  style={{ display: "flex", alignContent: "center", justifyContent: "space-between" }}
                 >
-                  <img
-                    className="rounded-circle m-2"
-                    src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"
-                    style={{ width: "4rem" }}
-                    alt="Profile"
-                  ></img>
-                  <div className="pl-2" style={{ alignSelf: "center" }}>
-                    <h6 className="mb-0">{data.userId.name}</h6>
-                    <p className="mb-0" style={{ fontSize: "0.8rem" }}>
-                      {moment
-                        .utc(data.dateCreated)
-                        .local()
-                        .format("DD MMMM YYYY HH:mm")}
-                    </p>
+                  <div style={{ display: "flex" }}>
+                    <img
+                      className="rounded-circle m-2"
+                      src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"
+                      style={{ width: "4rem" }}
+                      alt="Profile"
+                    ></img>
+                    <div className="pl-2" style={{ alignSelf: "center" }}>
+                      <h6 className="mb-0">{data.userId.name}</h6>
+                      <p className="mb-0" style={{ fontSize: "0.8rem" }}>
+                        {moment
+                          .utc(data.dateCreated)
+                          .local()
+                          .format("DD MMMM YYYY HH:mm")}
+                      </p>
+                    </div>
                   </div>
+                  {data.userId._id === this.props.userId && (
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <EditIcon className="mx-2" />
+                      <DeleteIcon
+                        className="mx-2"
+                        onClick={() => this.deletePost(data._id)}
+                      />
+                    </div>
+                  )}
                 </div>
                 <h4 className="p-3">{data.data}</h4>
+                {data.image && <img src={data.image} />}
                 <p className="border p-1" style={{ display: "flex" }}>
                   {!this.state.likedPosts.includes(data._id) ? (
                     <span className="mx-auto">

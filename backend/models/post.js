@@ -2,11 +2,14 @@ const mongoose = require('mongoose');
 const Post = mongoose.model('posts', new mongoose.Schema({
     dataType: {
         type: String,
-        enum: ['image', 'text', 'image-text']
     },
     data: {
         type: String,
         trim: true
+    },
+    image: {
+        type: String,
+        default: ""
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
