@@ -8,9 +8,10 @@ const catchAsync = require('./../utils/catchAsync');
  * URL - /posts/:id - /posts/{id of logged in user}
  * ***/
 exports.createPost = catchAsync(async (req, res, next) => {
-  let { dataType, data, userId } = req.body;
+  console
+  let { dataType, data, userId, image } = req.body;
   let { id } = req.params;
-  let post = await Post.create({ dataType, data, userId });
+  let post = await Post.create({ dataType, data, userId, image });
   let user = await User.findOne({ _id: id });
   user.posts.push(post._id);
   let userSaved = await user.save();
@@ -35,7 +36,12 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 });
 
 exports.deletePost = catchAsync(async (req, res, next) => {
-  let { _id } = req.body;
+  let { _id, userId } = req.body;
+  let user = await User.findOne({ _id: userId });
+  console.log(user.posts)
+  user.posts.splice(user.posts.indexOf(_id), 1);
+  console.log(user.posts)
+  user.save();
   let post = await Post.deleteOne({ _id });
   let comment = await Comment.deleteMany({ postId: _id })
   res.status(201).json({
@@ -114,9 +120,10 @@ exports.sortedPosts = catchAsync(async (req, res, next) => {
         }
       }
     });
+  let userPosts = await User.findOne({ _id: id }).populate({ path: 'posts', populate: { path: 'userId' } });
   posts = posts.following.reduce((acc, data) => [...acc, data.posts], []);
-  posts = [].concat(...posts);
-  posts.sort((posts1, posts2) => posts1.dateCreated > posts2.dateCreated ? -1 : 1);
+  posts = [].concat(...posts, ...userPosts.posts);
+  posts.sort((posts1, posts2) => { return posts1.dateCreated > posts2.dateCreated ? -1 : 1 });
   res.status(201).json({
     data: posts
   })

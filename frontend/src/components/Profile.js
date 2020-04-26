@@ -106,6 +106,7 @@ class Profile extends Component {
       backgroundColor: "black",
     };
     // console.log(this.state);
+    let id = this.props.match.params.id;
     let posts = this.state.userData.posts;
     return (
       <>
@@ -125,31 +126,47 @@ class Profile extends Component {
                 src={this.state.userData.profilePic ? this.state.userData.profilePic : "https://terrigen-cdn-dev.marvel.com/content/prod/1x/002irm_ons_mas_mob_01_0.jpg"}
                 alt="profile"
               ></img>
-              <button
-                className="float-right"
-                onClick={() => this.chooseFile('dp')}
-                style={{ backgroundColor: 'transparent', position: 'absolute', left: '145px', top: '175px' }}
-              >
-                <CameraAltIcon />
-              </button>
+              {id === this.props.userId && (
+                <div
+                  onClick={() => this.chooseFile('dp')}
+                  style={{
+                    position: "absolute",
+                    left: "0px",
+                    top: "178px",
+                    width: "180px",
+                    height: "30px",
+                    backgroundColor: "lightgray",
+                    opacity: "0.7",
+                    display: "flex",
+                    alignItems: "center"
+                  }}>
+                  <button
+                    style={{ backgroundColor: 'transparent', paddingLeft: "42%" }}
+                  >
+                    <CameraAltIcon />
+                  </button>
+                </div>
+              )}
             </div>
             <div id="u-name">{this.state.userData.name}</div>
 
-            <div id="edit-profile">
-              <input
-                className="d-none"
-                ref={(input) => (this.inputElement = input)}
-                type="file"
-                accept="image/*"
-                onChange={this.onSelectFile}
-              />
-              <button
-                onClick={() => this.chooseFile('cp')}
-                style={{ backgroundColor: 'transparent' }}
-              >
-                <CameraAltIcon /> Change Cover Pic
+            {id === this.props.userId && (
+              <div id="edit-profile">
+                <input
+                  className="d-none"
+                  ref={(input) => (this.inputElement = input)}
+                  type="file"
+                  accept="image/*"
+                  onChange={this.onSelectFile}
+                />
+                <button
+                  onClick={() => this.chooseFile('cp')}
+                  style={{ backgroundColor: 'transparent' }}
+                >
+                  <CameraAltIcon /> Change Cover Pic
               </button>
-            </div>
+              </div>
+            )}
 
           </div>
           <div id="black-grd"></div>
