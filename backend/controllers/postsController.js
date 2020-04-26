@@ -105,11 +105,6 @@ exports.sortedPosts = catchAsync(async (req, res, next) => {
         options: {
           limit: 10
         },
-        match: {
-          dateCreated: {
-            $lte: new Date()
-          }
-        },
         populate: {
           path: 'userId commentsId liked',
           select: '_id name email profilePic comment commentCreated',

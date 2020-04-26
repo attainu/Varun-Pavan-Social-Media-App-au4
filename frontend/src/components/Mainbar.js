@@ -30,6 +30,7 @@ class Mainbar extends Component {
     showUsersModal: false,
     postText: "",
     postImage: "",
+    imagePreviewUrl: ""
   };
 
   getPosts = () => {
@@ -39,6 +40,7 @@ class Mainbar extends Component {
     }
     );
     posts.then((res) => {
+      console.log(res.data.data);
       // res.data.data.sort((posts1, posts2) => { console.log(posts1.dateCreated > posts2.dateCreated, posts1.dateCreated, posts2.dateCreated); return posts1.dateCreated > posts2.dateCreated ? 1 : -1 });
       this.setState({
         posts: res.data.data,
@@ -68,9 +70,11 @@ class Mainbar extends Component {
       postId: id,
       userId: this.state.userId,
     };
-    await axios.put("http://localhost:3010/posts/like", data, {
+    let like = await axios.put("http://localhost:3010/posts/like", data, {
       headers: { 'auth-token': localStorage.getItem('token') }
     });
+    if (like && this.props.updatePosts)
+      this.props.updatePosts();
     this.getUser();
     this.getPosts();
   };
@@ -80,9 +84,11 @@ class Mainbar extends Component {
       postId: id,
       userId: this.state.userId,
     };
-    await axios.put("http://localhost:3010/posts/unlike", data, {
+    let like = await axios.put("http://localhost:3010/posts/unlike", data, {
       headers: { 'auth-token': localStorage.getItem('token') }
     });
+    if (like && this.props.updatePosts)
+      this.props.updatePosts();
     this.getUser();
     this.getPosts();
   };
@@ -199,25 +205,32 @@ class Mainbar extends Component {
     this.setState({
       postImage: e.target.files[0]
     });
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      this.setState({
+        imagePreviewUrl: reader.result
+      })
+    }
+    reader.readAsDataURL(e.target.files[0])
   }
 
-  deletePost = async (id) => {
+  deletePost = (id) => {
     try {
       console.log(id);
-      let del = await axios.delete(`http://localhost:3010/posts/`, {
+      let del = axios.delete(`http://localhost:3010/posts/`, {
         data: {
           _id: id,
           userId: this.props.userId
         }
       });
-      this.getPosts();
+      del.then(res => this.getPosts())
     } catch (error) {
 
     }
   }
 
   render() {
-    console.log(localStorage.getItem('token'));
+    console.log(this.props);
     let commentAuth = this.state.postComment.trim().length < 1;
     let editCommentAuth = this.state.editComment.trim().length < 1;
     console.log(this.props);
@@ -230,26 +243,39 @@ class Mainbar extends Component {
         style={{ width: "60vw", overflowY: "scroll", height: "95vh" }}
       >
         {viewUser && (
-          <div className="form-group border">
-            <label
-              className="p-2 px-3 mb-0"
-              style={{ width: "100%", backgroundColor: "#dedcdc" }}
-            >
-              Create post
+          <div className="form-group">
+            <div style={{ border: "1px solid" }}>
+              <label
+                className="p-2 px-3 mb-0"
+                style={{
+                  width: "100%",
+                  backgroundColor: "#dedcdc",
+                  borderBottom: "1px solid"
+                }}
+              >
+                Create Post
           </label>
-            <textarea
-              className="form-control"
-              id="exampleFormControlTextarea1"
-              rows="4"
-              value={this.state.postText}
-              onChange={(event) => this.handlePostTextData(event.target.value)}
-              placeholder="Write Something Here"
-            />
+              <textarea
+                className="form-control"
+                id="exampleFormControlTextarea1"
+                rows="4"
+                value={this.state.postText}
+                style={{ border: "0" }}
+                onChange={(event) => this.handlePostTextData(event.target.value)}
+                placeholder="Write Something Here"
+              />
+              {this.state.postImage && (
+                <div className="container">
+                  <img src={this.state.imagePreviewUrl} className="img-fluid" alt="Uploaded Image" />
+                </div>
+              )}
+            </div>
             <div
               style={{
                 display: "flex",
-                justifyContent: "flex-end"
+                justifyContent: "flex-end",
               }}
+              className="mt-1"
             >
               <FaImage size={40}
                 className="mx-2"
@@ -257,6 +283,7 @@ class Mainbar extends Component {
               />
               <button
                 onClick={() => this.uploadPost()}
+                disabled={this.state.postText.length === 0 && this.state.postImage.length === 0}
                 className="btn btn-primary">Post</button>
             </div>
             <input
@@ -271,20 +298,28 @@ class Mainbar extends Component {
         {posts.length &&
           posts.map((data, idx) => {
             return (
-              <div key={idx} className="border mb-3">
+              <div key={idx}
+                className="mb-3"
+                style={{ border: "1px solid" }}>
                 <div
-                  className="border-bottom"
-                  style={{ display: "flex", alignContent: "center", justifyContent: "space-between" }}
+                  style={{
+                    display: "flex",
+                    alignContent: "center",
+                    justifyContent: "space-between",
+                    borderBottom: "1px solid"
+                  }}
                 >
                   <div style={{ display: "flex" }}>
                     <img
                       className="rounded-circle m-2"
                       src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"
-                      style={{ width: "4rem" }}
+                      style={{
+                        width: "3rem",
+                      }}
                       alt="Profile"
                     ></img>
                     <div className="pl-2" style={{ alignSelf: "center" }}>
-                      <h6 className="mb-0">{data.userId.name}</h6>
+                      <h6 className="mb-0"><Link to={`/${data.userId._id}`}>{data.userId.name}</Link></h6>
                       <p className="mb-0" style={{ fontSize: "0.8rem" }}>
                         {moment
                           .utc(data.dateCreated)
@@ -295,7 +330,7 @@ class Mainbar extends Component {
                   </div>
                   {data.userId._id === this.props.userId && (
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <EditIcon className="mx-2" />
+                      <EditIcon className="mx-2" data-target="#uploadModal" />
                       <DeleteIcon
                         className="mx-2"
                         onClick={() => this.deletePost(data._id)}
@@ -303,11 +338,16 @@ class Mainbar extends Component {
                     </div>
                   )}
                 </div>
-                <h4 className="p-3">{data.data}</h4>
+                {data.data.length <= 180 ? <h4 className="p-2">{data.data}</h4> : <h6 className="p-1 pl-2">{data.data}</h6>}
                 {data.image && <img src={data.image} />}
-                <p className="border p-1" style={{ display: "flex" }}>
+                <p className=""
+                  style={{
+                    display: "flex",
+                    borderBottom: "1px solid",
+                    borderTop: "1px solid"
+                  }}>
                   {!this.state.likedPosts.includes(data._id) ? (
-                    <span className="mx-auto">
+                    <span className="mx-auto py-1">
                       <FavoriteBorder
                         className="mr-2"
                         style={{ cursor: "pointer" }}
@@ -329,9 +369,9 @@ class Mainbar extends Component {
                       )}
                     </span>
                   ) : (
-                      <span className="mx-auto">
+                      <span className="mx-auto py-1">
                         <Favorite
-                          className="mr-2"
+                          className="mr-1"
                           style={{ cursor: "pointer" }}
                           onClick={() => this.unlikeHandler(data._id)}
                           title="Unlike"
@@ -354,9 +394,9 @@ class Mainbar extends Component {
 
                   {/* Comments section */}
 
-                  <span className="mx-auto">
+                  <span className="mx-auto py-1">
                     <ChatBubbleOutlineIcon
-                      className="mr-2"
+                      className="mr-1"
                       style={{ cursor: "pointer" }}
                       title="Comment"
                       onClick={() => {
@@ -386,8 +426,8 @@ class Mainbar extends Component {
                     data.commentsId.map((comment, cidx) => {
                       // if (data._id === this.state.opened)
                       return (
-                        comment.userId && <div key={cidx} className="m-3">
-                          <div style={{ border: "1px #dee2e6 solid" }}>
+                        comment.userId && <div key={cidx} className="m-1">
+                          {/* <div style={{ border: "1px #dee2e6 solid" }}>
                             <div
                               className="border-bottom"
                               style={{
@@ -398,7 +438,7 @@ class Mainbar extends Component {
                               <img
                                 className="rounded-circle m-2"
                                 src={`${comment.userId.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"}`}
-                                style={{ width: "2rem" }}
+                                style={{ width: "3rem" }}
                                 alt="Profile"
                               ></img>
                               <div
@@ -431,7 +471,6 @@ class Mainbar extends Component {
                                   data-toggle="modal"
                                   data-target="#exampleModalCenter"
                                   onClick={() => {
-                                    console.log(comment._id)
                                     this.setState({
                                       editComment: comment.comment,
                                       editCommentId: comment._id
@@ -463,6 +502,73 @@ class Mainbar extends Component {
                               }}
                             >
                               <p>{comment.comment}</p>
+                            </div>
+                          </div>*/}
+                          <div style={{
+                            display: "flex",
+                            alignItems: "flex-start"
+                          }}
+                          >
+                            <div>
+                              <img
+                                className="rounded-circle m-2"
+                                src={`${comment.userId.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"}`}
+                                style={{ width: "3rem" }}
+                                alt="Profile"
+                              ></img>
+                            </div>
+                            <div
+                              style={{ alignSelf: "center" }}
+                              className="mr-auto"
+                            >
+                              <p
+                                className="mb-0 p-1"
+                                style={{
+                                  background: "#d6d1d1",
+                                  borderRadius: "8px"
+                                }}
+                              >
+                                <span className="mr-1">
+                                  <Link
+                                    to={`/${comment.userId._id}`}
+                                    style={{ textDecoration: "none" }}
+                                  >
+                                    {comment.userId.name}
+                                  </Link>
+                                </span>
+                                {comment.comment}
+                              </p>
+                            </div>
+                            <div style={{ alignSelf: "center" }}>
+                              {comment.userId._id === this.state.userId && (
+                                <button
+                                  title="Edit"
+                                  className="btn p-1"
+                                  data-toggle="modal"
+                                  data-target="#exampleModalCenter"
+                                  onClick={() => {
+                                    this.setState({
+                                      editComment: comment.comment,
+                                      editCommentId: comment._id
+                                    })
+                                  }
+                                  }
+                                >
+                                  <EditIcon />
+                                </button>
+                              )}
+                              {(comment.userId._id === this.state.userId ||
+                                this.state.postsByUser.includes(data._id)) && (
+                                  <button
+                                    title="Delete"
+                                    className="btn p-1"
+                                    onClick={() =>
+                                      this.deleteHandler(comment._id, data._id)
+                                    }
+                                  >
+                                    <DeleteIcon />
+                                  </button>
+                                )}
                             </div>
                           </div>
                           <div
@@ -622,18 +728,23 @@ class Mainbar extends Component {
                     className="form-control"
                     rows="2"
                     id={idx}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       this.setState({ postComment: e.target.value })
-                    }
+                    }}
+                    onKeyDown={(e) => {
+                      console.log(e.keyCode)
+                      if (e.keyCode === 13)
+                        this.commentHandler(data._id, idx)
+                    }}
                     placeholder="Write a comment..."
                   />
-                  <button
+                  {/* <button
                     className="btn btn-outline-success"
                     disabled={commentAuth}
                     onClick={() => this.commentHandler(data._id, idx)}
                   >
                     Comment
-                  </button>
+                  </button> */}
 
                   {/* Comments section ends */}
 

@@ -11,18 +11,18 @@ import Profile from './components/Profile';
 import Reset from './components/reset';
 import Explore from './components/explore';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="inherit" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="/">
-        Social Media
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+// function Copyright() {
+//   return (
+//     <Typography variant="body2" color="inherit" align="center">
+//       {'Copyright © '}
+//       <Link color="inherit" href="/">
+//         Social Media
+//       </Link>{' '}
+//       {new Date().getFullYear()}
+//       {'.'}
+//     </Typography>
+//   );
+// }
 
 
 class App extends Component {

@@ -97,6 +97,18 @@ class Profile extends Component {
     this.getUser();
   }
 
+  getUpdatePosts = () => {
+    axios
+      .get(`http://localhost:3010/users/user?id=${this.props.match.params.id}`, {
+        headers: { 'auth-token': localStorage.getItem('token') }
+      })
+      .then((res) => {
+        this.setState({
+          userData: res.data.data.user,
+        });
+      });
+  }
+
   render() {
     if (!localStorage.getItem('token')) {
       return <Redirect to='/login' />
@@ -216,7 +228,7 @@ class Profile extends Component {
         {/* <Mainbar /> */}
         <div style={{ display: "flex", justifyContent: "space-around" }}>
           <LeftProfileBar />
-          {this.props.active === "posts" && <Mainbar posts={posts} />}
+          {this.props.active === "posts" && <Mainbar posts={posts} updatePosts={this.getUpdatePosts} />}
           {this.props.active === "following" && (
             <div
               style={{
