@@ -42,6 +42,12 @@ exports.getUserData = catchAsync(async (req, res, next) => {
       populate: {
         path: 'userId',
         select: 'name dateCreated'
+      },
+      populate: {
+        path: "userId liked commentsId",
+        populate: {
+          path: "userId"
+        }
       }
     });
   res.json({
