@@ -15,7 +15,7 @@ router.get("/follow/:id1/:id2", auth, usersController.addFollowerFollowing);
 router.get("/followers/:id", auth, usersController.getAllFollowers);
 router.get("/following/:id", auth, usersController.getAllFollowing);
 router.get("/posts/:id", auth, usersController.getAllPosts);
-router.put("/unfollow/:id1/:id2", auth, usersController.removeFollowerFollowing);
+router.put("/unfollow/:id1/:id2", usersController.removeFollowerFollowing);
 router.post("/follow/:id1/:id2", usersController.addFollowerFollowing);
 router.put("/dp", auth, usersController.updateDP);
 

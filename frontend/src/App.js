@@ -9,6 +9,7 @@ import Navbar from './components/Navbar';
 import Typography from '@material-ui/core/Typography'
 import Profile from './components/Profile';
 import Reset from './components/reset';
+import Explore from './components/explore';
 
 function Copyright() {
   return (
@@ -36,6 +37,7 @@ class App extends Component {
 
             <Switch>
               <Route exact path="/reset" component={Reset} />
+              <Route path="/explore" component={Explore} />
               <Route exact path="/"   >
                 {localStorage.getItem('token') ? <Redirect to='/home' /> : <Redirect to='/signup' />}
 

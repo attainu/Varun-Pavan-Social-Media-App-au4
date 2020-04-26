@@ -33,11 +33,9 @@ const User = mongoose.model('users', {
     },
     securityQuestion: {
         type: String,
-        required: true
     },
     securityAnswer: {
         type: String,
-        required: true
     },
     location: {
         type: String,

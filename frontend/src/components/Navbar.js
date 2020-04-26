@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import { FiLogOut } from 'react-icons/fi';
+import ExploreIcon from '@material-ui/icons/Explore';
 class Navbar extends Component {
   render() {
     let location = window.location.pathname === '/signup' || window.location.pathname === '/login';
@@ -26,6 +27,11 @@ class Navbar extends Component {
               <li className="nav-item mr-3">
                 <Link className="nav-link " to={`/${this.props.userId}`} title='Profile'>
                   <PersonRoundedIcon fontSize="large" style={{ color: "black" }} />
+                </Link>
+              </li>
+              <li className="nav-item mr-3">
+                <Link className="nav-link " to='/explore' title='Explore'>
+                  <ExploreIcon fontSize="large" style={{ color: "black" }} />
                 </Link>
               </li>
               <li className="nav-item mr-3 mt-2 ">
