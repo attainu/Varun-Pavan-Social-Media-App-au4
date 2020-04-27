@@ -8,7 +8,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Link as Rlink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
@@ -94,7 +94,20 @@ export default function SignUp() {
         !answerValidation &&
         securityQuestionValudation
         ;
+    const emailSubmitHandler = async () => {
+        let find = await axios.post("http://localhost:3010/users/resetemail", { email })
+        console.log(find.data.data)
+        if (find.data.data == true) {
+            updatedAlertText("Reset link has been sent to your mail");
+            newSeverity("success");
+            return handleClick();
 
+        } else {
+            updatedAlertText("Email doesnt exist");
+            newSeverity("error");
+            return handleClick();
+        }
+    }
     const submitHandler = async () => {
 
         let securityAnswer = answer.trim().toLocaleLowerCase()
@@ -246,11 +259,24 @@ export default function SignUp() {
                     >
                         Reset
           </Button>
+                    <div>
+                        <Button
+                            type="button"
+                            // fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            onClick={emailSubmitHandler}
+                            disabled={emailValidation}
+                        >
+                            Reset via mail
+          </Button>
+                    </div>
                     <Grid container justify="flex-end">
                         <Grid item>
-                            <Rlink to="/login" variant="body2">
+                            <Link to="/login" variant="body2">
                                 Already have an account? Sign in
-              </Rlink>
+              </Link>
                         </Grid>
                     </Grid>
                 </form>

@@ -19,5 +19,7 @@ router.put("/unfollow/:id1/:id2", usersController.removeFollowerFollowing);
 router.post("/follow/:id1/:id2", usersController.addFollowerFollowing);
 router.put("/dp", auth, usersController.updateDP);
 router.post("/update", auth, usersController.updateUser);
+router.post("/resetemail", usersController.resetViaMail);
+router.post("/changepassword", usersController.changePassword);
 
 module.exports = router;

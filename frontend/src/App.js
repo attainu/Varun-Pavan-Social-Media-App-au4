@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography'
 import Profile from './components/Profile';
 import Reset from './components/reset';
 import Explore from './components/explore';
+import ChangePassword from './components/changePass'
 
 // function Copyright() {
 //   return (
@@ -37,6 +38,7 @@ class App extends Component {
 
             <Switch>
               <Route exact path="/reset" component={Reset} />
+              <Route exact path="/resetpassword/:id" component={ChangePassword} />
               <Route path="/explore" component={Explore} />
               <Route exact path="/"   >
                 {localStorage.getItem('token') ? <Redirect to='/home' /> : <Redirect to='/signup' />}

@@ -6,6 +6,10 @@ const AppError = require('./../utils/appError');
 const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
 const request = require('request');
+const express = require('express');
+const app = express();
+const nodemailer = require('nodemailer');
+
 
 cloudinary.config({
   cloud_name: 'dyhtwa8fn',
@@ -315,4 +319,85 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   })
 
 
+})
+
+
+exports.resetViaMail = catchAsync(async (req, res, next) => {
+  let { email } = req.body
+  // console.log(email)
+  let user = await User.findOne({ email })
+
+  // console.log(user)
+  if (user) {
+    res.json({
+      data: true
+    })
+    // _____________
+    // let send = async () => {
+    const token = jwt.sign({ _id: user._id }, 'secretkey', { expiresIn: "15m" })
+    app.use(express.json())
+    app.use(express.urlencoded())
+    let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: 'msocial190@gmail.com', // generated ethereal user
+        pass: 'varunpavan190' // generated ethereal password
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+      from: 'msocial190@gmail.com', // sender address
+      to: `${email}`, // list of receivers
+      subject: "Password reset request", // Subject line
+      text: "Hello", // plain text body
+      html: `<div>
+      <b>Hello, ${email}</b>
+      <p>click on the link to reset your password</p>
+      <p>http://localhost:3000/resetpassword/${token}</p>
+      <p>Link will expire in 15 minutes</p>
+      <div>` // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+    // Preview only available when sending through an Ethereal account
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // }
+    // console.log(send)
+    // send()
+    // ____________________
+
+  } else {
+    return res.json({
+      data: false
+    })
+  }
+})
+
+exports.changePassword = catchAsync(async (req, res, next) => {
+  let { token, password } = req.body;
+  console.log(token)
+  const verified = jwt.verify(token, 'secretkey');
+  if (verified) {
+    let salt = await bcryptjs.genSalt(10);
+    let hashPassword = await bcryptjs.hash(password, salt)
+    let user = await User.findOne({ _id: verified._id })
+    user.password = hashPassword;
+    await user.save()
+    console.log(user)
+    return res.json({
+      data: true
+    })
+  } else {
+    return res.json({
+      data: false
+    })
+  }
 })
