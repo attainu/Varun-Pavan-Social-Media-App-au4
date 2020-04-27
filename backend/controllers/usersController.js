@@ -125,6 +125,8 @@ exports.createUser = catchAsync(async (req, res, next) => {
   let hashPassword = await bcryptjs.hash(password, salt)
 
   let user = await User.create({ name, email, phone, password: hashPassword, gender, location, bio, securityQuestion, securityAnswer });
+  // user.following.push(user._id)
+  // await user.save()
   res.json({
     status: true,
     data: user
@@ -141,9 +143,13 @@ exports.loginUser = catchAsync(async (req, res, next) => {
   let { email, password } = req.body;
   let user = await User.findOne({ email });
 
+  if (!user) {
+    return res.json({ status: false })
+  }
+
   //Decrypt password
-  // let validPassword = await bcryptjs.compare(password, user.password);
-  validPassword = true;
+  let validPassword = await bcryptjs.compare(password, user.password);
+  // validPassword = true;
   if (validPassword) {
     const token = jwt.sign({ _id: user._id }, 'secretkey',
       // { expiresIn: "1h" }

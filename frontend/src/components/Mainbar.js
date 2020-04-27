@@ -573,6 +573,7 @@ class Mainbar extends Component {
                           </div>
                           <div
                             className="modal fade"
+                            data-backdrop="false"
                             id="exampleModalCenter"
                             tabIndex="-1"
                             role="dialog"
@@ -654,6 +655,7 @@ class Mainbar extends Component {
 
                           <div
                             className="modal fade"
+                            data-backdrop="false"
                             id="exampleModalLong"
                             tabIndex="-1"
                             role="dialog"

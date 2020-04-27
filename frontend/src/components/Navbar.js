@@ -39,7 +39,7 @@ class Navbar extends Component {
                 <SearchBar />
               </li>
               <li className="nav-item mr-3 mt-1 ">
-                <Link title='Logout' to="" onClick={() => {
+                <Link title='Logout' to="/login" onClick={() => {
                   localStorage.removeItem('token')
                   localStorage.removeItem('userId')
                   window.location.href = '/login'
