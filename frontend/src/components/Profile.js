@@ -223,6 +223,13 @@ class Profile extends Component {
             >
               Commented Posts
             </button>
+            <button
+              onClick={() => this.changeActive("about")}
+              className=" p-2 px-3 border-right"
+              style={this.props.active === "about" ? colorBlue : {}}
+            >
+              About
+            </button>
           </div>
         </div>
         {/* <Mainbar /> */}
@@ -241,7 +248,7 @@ class Profile extends Component {
               {this.props.active === "following" &&
                 this.state.userData.following &&
                 this.state.userData.following.map((data) => (
-                  <div
+                  this.props.userId !== data._id && <div
                     className="mx-2 mt-3"
                     style={{ display: "flex", alignItems: "baseline" }}
                   >
@@ -274,7 +281,7 @@ class Profile extends Component {
               {this.props.active === "followers" &&
                 this.state.userData.followers &&
                 this.state.userData.followers.map((data) => (
-                  <div style={{ display: "flex", alignItems: "baseline" }}>
+                  this.props.userId !== data._id && <div style={{ display: "flex", alignItems: "baseline" }}>
                     <img
                       alt="Profile"
                       src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"

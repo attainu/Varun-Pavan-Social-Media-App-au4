@@ -115,9 +115,10 @@ exports.sortedPosts = catchAsync(async (req, res, next) => {
         }
       }
     });
-  let userPosts = await User.findOne({ _id: id }).populate({ path: 'posts', populate: { path: 'userId' } });
+  // let userPosts = await User.findOne({ _id: id }).populate({ path: 'posts', populate: { path: 'userId' } });
   posts = posts.following.reduce((acc, data) => [...acc, data.posts], []);
-  posts = [].concat(...posts, ...userPosts.posts);
+  // posts = [].concat(...posts, ...userPosts.posts);
+  posts = [].concat(...posts);
   posts.sort((posts1, posts2) => { return posts1.dateCreated > posts2.dateCreated ? -1 : 1 });
   res.status(201).json({
     data: posts

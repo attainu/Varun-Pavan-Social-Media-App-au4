@@ -48,8 +48,8 @@ class LeftBar extends Component {
             <Link to={`/${this.state.data._id}`}>
               <h6 className="mt-2">{this.state.data.name}</h6>
             </Link>
-            <h6>Followers ({this.state.data.followers.length})</h6>
-            <h6>Following ({this.state.data.following.length})</h6>
+            <h6>Followers ({this.state.data.followers.length - 1})</h6>
+            <h6>Following ({this.state.data.following.length - 1})</h6>
           </>
         )}
       </div>
