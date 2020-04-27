@@ -344,16 +344,16 @@ class Profile extends Component {
               }
             </table>
               {/* <!-- Modal --> */}
-              <div class="modal fade" data-backdrop="false" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header mt-5">
-                      <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick={() => this.setState({ user: this.state.tempUser })}>
+              <div className="modal fade" data-backdrop="false" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header mt-5">
+                      <h5 className="modal-title" id="exampleModalLabel">Edit Profile</h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={() => this.setState({ user: this.state.tempUser })}>
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <div class="modal-body">
+                    <div className="modal-body">
                       <input type="text" className="form-control mb-2" onChange={(e) => {
                         let user = { ...this.state.user };
                         user.name = e.target.value;
@@ -389,9 +389,9 @@ class Profile extends Component {
                       </select>
                                 ...
       </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick={() => this.setState({ user: this.state.tempUser })}>Close</button>
-                      <button type="button" class="btn btn-primary" onClick={() => this.updateUser()} data-dismiss="modal">Update</button>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => this.setState({ user: this.state.tempUser })}>Close</button>
+                      <button type="button" className="btn btn-primary" onClick={() => this.updateUser()} data-dismiss="modal">Update</button>
                     </div>
                   </div>
                 </div>

@@ -295,7 +295,8 @@ class Mainbar extends Component {
             />
           </div>
         )}
-        {posts.length &&
+        {!posts.length ?
+          <h5 className="text-center font-weight-bold text-secondary"> "Create post or follow a friend..!" </h5 > :
           posts.map((data, idx) => {
             return (
               <div key={idx}
