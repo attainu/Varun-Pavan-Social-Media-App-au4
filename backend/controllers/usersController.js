@@ -126,6 +126,7 @@ exports.createUser = catchAsync(async (req, res, next) => {
 
   let user = await User.create({ name, email, phone, password: hashPassword, gender, location, bio, securityQuestion, securityAnswer });
   user.following.push(user._id)
+  user.followers.push(user._id)
   await user.save()
   res.json({
     status: true,

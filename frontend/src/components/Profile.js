@@ -283,7 +283,7 @@ class Profile extends Component {
                   >
                     <img
                       alt="profile"
-                      src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"
+                      src={data.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"}
                       style={{
                         width: "8rem",
                       }}
@@ -313,7 +313,7 @@ class Profile extends Component {
                   this.props.userId !== data._id && <div style={{ display: "flex", alignItems: "baseline" }}>
                     <img
                       alt="Profile"
-                      src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"
+                      src={data.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"}
                       style={{ width: "8rem" }}
                     ></img>
                     <Link
@@ -327,18 +327,18 @@ class Profile extends Component {
             </div>
           )}
           {this.props.active === "about" && this.state.user && (
-            <><table className="table about container" >
+            <><table className="table mt-5 about container" style={{ width: "30vw" }}>
               <tbody className="about-ul" >
                 <tr >
-                  <td>Name </td><td> {this.state.user.name} </td>
+                  <td className="font-weight-bold">Name </td><td className="text-capitalize"> {this.state.user.name} </td>
                 </tr >
                 <tr>
-                  <td>Email </td><td> {this.state.user.email}</td>
+                  <td className="font-weight-bold">Email </td><td> {this.state.user.email}</td>
                 </tr>
-                <tr><td>Phone</td><td> {this.state.user.phone || "00000"}</td></tr>
-                <tr><td>Location</td><td>{this.state.user.location || "India"}</td></tr>
-                <tr><td>DOB </td><td>{this.state.user.dob || "01 / 01 / 2000"}</td></tr>
-                <tr><td>Gender</td><td>{this.state.user.gender || "__"}</td></tr>
+                <tr><td className="font-weight-bold">Phone</td><td> {this.state.user.phone || "00000"}</td></tr>
+                <tr><td className="font-weight-bold">Location</td><td className="text-capitalize">{this.state.user.location || "India"}</td></tr>
+                <tr><td className="font-weight-bold">DOB </td><td>{this.state.user.dob || "01 / 01 / 2000"}</td></tr>
+                <tr><td className="font-weight-bold">Gender</td><td className="text-capitalize">{this.state.user.gender || "__"}</td></tr>
               </tbody>
               {this.props.match.params.id === this.props.userId && <EditIcon data-toggle="modal" data-target="#exampleModal" title="Edit profile" />
               }
