@@ -585,7 +585,7 @@ class Mainbar extends Component {
                               role="document"
                             >
                               <div className="modal-content">
-                                <div className="modal-header">
+                                <div className="modal-header mt-5">
                                   <h5
                                     className="modal-title"
                                     id="exampleModalLongTitle"
@@ -664,7 +664,7 @@ class Mainbar extends Component {
                           >
                             <div className="modal-dialog" role="document">
                               <div className="modal-content">
-                                <div className="modal-header">
+                                <div className="modal-header mt-5">
                                   <h5
                                     className="modal-title"
                                     id="exampleModalLongTitle"

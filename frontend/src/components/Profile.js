@@ -8,10 +8,14 @@ import "./Profile.css";
 import Mainbar from "./Mainbar";
 import LeftProfileBar from "./LeftProfileBar";
 import { Redirect } from 'react-router-dom'
+import EditIcon from '@material-ui/icons/Edit';
+
 
 class Profile extends Component {
   state = {
     userData: {},
+    user: [],
+    tempUser: [],
     active: "following",
     imageCropper: false,
     imageType: '',
@@ -35,9 +39,25 @@ class Profile extends Component {
         });
       });
   }
-
+  getAboutData = async () => {
+    let user = await axios.get(`http://localhost:3010/users/${this.props.userId}`, {
+      headers: { 'auth-token': localStorage.getItem('token') }
+    })
+    console.log("cwm", user.data.data)
+    this.setState({ user: user.data.data, tempUser: user.data.data })
+  }
   componentDidMount() {
     this.getUser();
+    this.getAboutData()
+    console.log(this.state.user)
+  }
+  updateUser = async () => {
+    let data = await axios.post(`http://localhost:3010/users/update`, this.state.user, {
+      headers: { 'auth-token': localStorage.getItem('token') }
+    })
+    console.log(data)
+    this.getUser();
+    this.getAboutData()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -234,7 +254,16 @@ class Profile extends Component {
         </div>
         {/* <Mainbar /> */}
         <div style={{ display: "flex", justifyContent: "space-around" }}>
-          <LeftProfileBar />
+          {/* <LeftProfileBar /> */}
+          <div className="card mx-3 mt-5" style={{ width: "25vw", height: "auto" }}>
+            <div className="card-body">
+              <h5 className="card-title">Bio</h5>
+              <p className="card-text">
+                {this.state.user.bio ? this.state.user.bio : '"Write a bio..!"'}
+              </p>
+              {/* <a href="#" class="btn btn-primary">Go somewhere</a> */}
+            </div>
+          </div>
           {this.props.active === "posts" && <Mainbar posts={posts} updatePosts={this.getUpdatePosts} />}
           {this.props.active === "following" && (
             <div
@@ -297,6 +326,78 @@ class Profile extends Component {
                 ))}
             </div>
           )}
+          {this.props.active === "about" && this.state.user && (
+            <><table className="table about container" >
+              <tbody className="about-ul" >
+                <tr >
+                  <td>Name </td><td> {this.state.user.name} </td>
+                </tr >
+                <tr>
+                  <td>Email </td><td> {this.state.user.email}</td>
+                </tr>
+                <tr><td>Phone</td><td> {this.state.user.phone || "00000"}</td></tr>
+                <tr><td>Location</td><td>{this.state.user.location || "India"}</td></tr>
+                <tr><td>DOB </td><td>{this.state.user.dob || "01 / 01 / 2000"}</td></tr>
+                <tr><td>Gender</td><td>{this.state.user.gender || "__"}</td></tr>
+              </tbody>
+              {this.props.match.params.id === this.props.userId && <EditIcon data-toggle="modal" data-target="#exampleModal" title="Edit profile" />
+              }
+            </table>
+              {/* <!-- Modal --> */}
+              <div class="modal fade" data-backdrop="false" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header mt-5">
+                      <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick={() => this.setState({ user: this.state.tempUser })}>
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <input type="text" className="form-control mb-2" onChange={(e) => {
+                        let user = { ...this.state.user };
+                        user.name = e.target.value;
+                        this.setState({ user })
+                      }} value={this.state.user.name} placeholder="Name" />
+                      <input type="number" className="form-control mb-2" onChange={(e) => {
+                        let user = { ...this.state.user };
+                        user.phone = e.target.value;
+                        this.setState({ user })
+                      }} value={this.state.user.phone} placeholder="Phone" />
+                      <input type="text" onChange={(e) => {
+                        let user = { ...this.state.user };
+                        user.location = e.target.value;
+                        this.setState({ user })
+                      }} className="form-control mb-2" value={this.state.user.location} placeholder="Location" />
+                      <input type="text" onChange={(e) => {
+                        let user = { ...this.state.user };
+                        user.bio = e.target.value;
+                        this.setState({ user })
+                      }} className="form-control mb-2" value={this.state.user.bio} placeholder="Bio" />
+                      <input type="date" onChange={(e) => {
+                        let user = { ...this.state.user };
+                        user.dob = e.target.value;
+                        this.setState({ user })
+                      }} className="form-control mb-2" value={this.state.user.dob} placeholder="Date of birth" />
+                      <select className="form-control" placeholder="Gender" onChange={(e) => {
+                        let user = { ...this.state.user };
+                        user.gender = e.target.value;
+                        this.setState({ user })
+                      }}>
+                        <option>Male</option>
+                        <option>Female</option>
+                      </select>
+                                ...
+      </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick={() => this.setState({ user: this.state.tempUser })}>Close</button>
+                      <button type="button" class="btn btn-primary" onClick={() => this.updateUser()} data-dismiss="modal">Update</button>
+                    </div>
+                  </div>
+                </div>
+              </div></>
+          )}
+
         </div>
       </>
     );

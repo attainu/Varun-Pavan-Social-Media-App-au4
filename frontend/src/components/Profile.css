@@ -131,3 +131,7 @@ btn:hover {
   border: none !important;
   outline: none !important;
 }
+.about>tbody>tr>td{
+  border: none;
+  width: 10px;
+}

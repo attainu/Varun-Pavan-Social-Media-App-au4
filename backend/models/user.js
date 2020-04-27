@@ -42,6 +42,8 @@ const User = mongoose.model('users', {
     },
     dob: {
         type: Date,
+        default: ""
+
     },
     gender: {
         type: String,
@@ -49,6 +51,7 @@ const User = mongoose.model('users', {
     },
     bio: {
         type: String,
+        default: ""
     },
     following: {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
