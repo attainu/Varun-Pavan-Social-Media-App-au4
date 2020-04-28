@@ -35,6 +35,18 @@ exports.updatePost = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.updatePostImage = catchAsync(async (req, res, next) => {
+  let { postId, data, image } = req.body;
+  console.log(await Post.findOne({ _id: postId }))
+  let post = await Post.updateOne({ _id: postId }, { $set: { data, image } });
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: post
+    }
+  });
+});
+
 exports.deletePost = catchAsync(async (req, res, next) => {
   let { _id, userId } = req.body;
   let user = await User.findOne({ _id: userId });
@@ -101,7 +113,7 @@ exports.sortedPosts = catchAsync(async (req, res, next) => {
       select: 'posts',
       populate: {
         path: 'posts',
-        select: 'data userId dateCreated liked commentsId',
+        select: 'data image userId dateCreated liked commentsId',
         options: {
           limit: 10
         },

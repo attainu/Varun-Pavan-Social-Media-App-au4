@@ -5,7 +5,9 @@ const postController = require("./../controllers/postsController");
 router
     .route('/')
     .put(postController.updatePost)
-    .delete(postController.deletePost);
+    .delete(postController.deletePost)
+
+router.put("/update", postController.updatePostImage);
 
 router
     .route('/:id')

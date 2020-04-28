@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
-import moment from 'moment'
+import moment from 'moment';
 import { Favorite, FavoriteBorder } from '@material-ui/icons';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import { FaImage } from "react-icons/fa";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { Link } from 'react-router-dom'
-import { withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import "./Mainbar.css";
 
 const url = 'https://api.cloudinary.com/v1_1/dyhtwa8fn/image/upload';
@@ -30,7 +30,12 @@ class Mainbar extends Component {
     showUsersModal: false,
     postText: "",
     postImage: "",
-    imagePreviewUrl: ""
+    imagePreviewUrl: "",
+    spinner: false,
+    updatePostText: "",
+    updatePostImagee: "",
+    updateImagePreviewUrl: "",
+    editPostId: "",
   };
 
   getPosts = () => {
@@ -40,8 +45,6 @@ class Mainbar extends Component {
     }
     );
     posts.then((res) => {
-      console.log(res.data.data);
-      // res.data.data.sort((posts1, posts2) => { console.log(posts1.dateCreated > posts2.dateCreated, posts1.dateCreated, posts2.dateCreated); return posts1.dateCreated > posts2.dateCreated ? 1 : -1 });
       this.setState({
         posts: res.data.data,
       });
@@ -173,7 +176,7 @@ class Mainbar extends Component {
         imageUrl = res.data.secure_url;
         console.log(imageUrl);
       }
-      let post = await axios.post(`http://localhost:3010/posts/${this.props.userId}`, {
+      await axios.post(`http://localhost:3010/posts/${this.props.userId}`, {
         type: "text",
         userId: this.props.userId,
         data: this.state.postText,
@@ -214,6 +217,51 @@ class Mainbar extends Component {
     reader.readAsDataURL(e.target.files[0])
   }
 
+  onUpdateSelectFile = e => {
+    this.setState({
+      updatePostImagee: e.target.files[0]
+    });
+
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      this.setState({
+        updateImagePreviewUrl: reader.result
+      })
+    }
+    reader.readAsDataURL(e.target.files[0])
+  }
+
+  updatePost = async (id, idx) => {
+    console.log(id, idx);
+    try {
+      let res;
+      let imageUrl = "";
+      if (this.state.updatePostImagee) {
+        const formData = new FormData();
+        formData.append('file', this.state.updatePostImagee);
+        formData.append('upload_preset', preset);
+        res = await axios.post(url, formData);
+        imageUrl = res.data.secure_url;
+      }
+      await axios.put(`http://localhost:3010/posts/update`, {
+        type: "text",
+        postId: this.state.editPostId,
+        userId: this.props.userId,
+        data: this.state.updatePostText,
+        image: imageUrl ? imageUrl : ""
+      }, {
+        headers: { 'auth-token': localStorage.getItem('token') }
+      })
+      this.getPosts();
+      this.setState({
+        updatePostText: "",
+        updateImagePreviewUrl: ""
+      })
+    } catch (error) {
+
+    }
+  }
+
   deletePost = (id) => {
     try {
       console.log(id);
@@ -229,6 +277,21 @@ class Mainbar extends Component {
     }
   }
 
+  removePostImage = () => {
+    this.setState({
+      postImage: "",
+      imagePreviewUrl: "",
+    })
+  }
+
+  removeUpdatePostImage = () => {
+    this.setState({
+      updatePostImagee: "",
+      updateImagePreviewUrl: ""
+    })
+  }
+
+
   render() {
     console.log(this.props);
     let commentAuth = this.state.postComment.trim().length < 1;
@@ -240,7 +303,7 @@ class Mainbar extends Component {
     return (
       <div
         className="pt-5 px-2 px-md-0 mx-md-auto mx-lg-auto posts"
-        style={{ width: "60vw", overflowY: "scroll", height: "95vh" }}
+        style={{ width: "50vw", overflowY: "scroll", height: "95vh" }}
       >
         {viewUser && (
           <div className="form-group">
@@ -265,8 +328,26 @@ class Mainbar extends Component {
                 placeholder="Write Something Here"
               />
               {this.state.postImage && (
-                <div className="container">
-                  <img src={this.state.imagePreviewUrl} className="img-fluid" alt="Uploaded Image" />
+                <div
+                  className="container"
+                  style={{
+                    display: "inline-block",
+                    position: "relative",
+                  }}>
+                  <img src={this.state.imagePreviewUrl} style={{ width: "200px" }} className="img-fluid" alt="Uploaded Image" />
+                  <img
+                    src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_close_48px-512.png"
+                    onClick={() => this.removePostImage()}
+                    style={{
+                      position: "absolute",
+                      width: "25px",
+                      top: "5px",
+                      left: "185px",
+                      borderRadius: "25%",
+                      background: "25%",
+                      backgroundColor: "grey",
+                    }}
+                  />
                 </div>
               )}
             </div>
@@ -298,6 +379,7 @@ class Mainbar extends Component {
         {!posts.length ?
           <h5 className="text-center font-weight-bold text-secondary"> "Create post or follow a friend..!" </h5 > :
           posts.map((data, idx) => {
+            console.log(data._id);
             return (
               <div key={idx}
                 className="mb-3"
@@ -331,13 +413,85 @@ class Mainbar extends Component {
                   </div>
                   {data.userId._id === this.props.userId && (
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <EditIcon className="mx-2" data-target="#uploadModal" />
+                      <button
+                        data-backdrop="false"
+                        data-toggle="modal"
+                        data-target="#editPost"
+                        onClick={() => this.setState({
+                          editPostId: data._id
+                        })}
+                      >
+                        <EditIcon className="mx-2" />
+                      </button>
                       <DeleteIcon
                         className="mx-2"
-                        onClick={() => this.deletePost(data._id)}
+                        onClick={() => this.deletePost(data._id, idx)}
                       />
                     </div>
                   )}
+                </div>
+                <div class="modal mt-5 fade" id="editPost" tabindex="-1" role="dialog" >
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Edit Post</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body" >
+                        <label>Post Text:</label><br></br>
+                        <textarea
+                          style={{ width: "100%" }}
+                          rows="4"
+                          value={this.state.updatePostText}
+                          onChange={(e) => this.setState({ updatePostText: e.target.value })}
+                        />
+                        <label>Post Image:</label><br></br>
+                        {this.state.updateImagePreviewUrl && (
+                          <div
+                            className="container"
+                            style={{
+                              display: "inline-block",
+                              position: "relative",
+                            }}>
+                            <img
+                              src={this.state.updateImagePreviewUrl}
+                              style={{ width: "200px" }}
+                              className="img-fluid"
+                              alt="Uploaded Updated Post Image" />
+                            <img
+                              src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_close_48px-512.png"
+                              onClick={() => this.removeUpdatePostImage()}
+                              style={{
+                                position: "absolute",
+                                width: "25px",
+                                top: "5px",
+                                left: "185px",
+                                borderRadius: "25%",
+                                background: "25%",
+                                backgroundColor: "grey",
+                              }}
+                            />
+                          </div>
+                        )}
+                        <input
+                          onChange={(e) => this.onUpdateSelectFile(e)}
+                          accept="image/*"
+                          type="file" />
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                          data-dismiss="modal">Close</button>
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          onClick={() => this.updatePost(data._id, idx)}
+                          data-dismiss="modal"
+                        >Save changes</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 {data.data.length <= 180 ? <h4 className="p-2">{data.data}</h4> : <h6 className="p-1 pl-2">{data.data}</h6>}
                 {data.image && <img src={data.image} />}
@@ -622,7 +776,6 @@ class Mainbar extends Component {
                                     }
                                     placeholder="Edit comment..."
                                   />
-                                  ...
                                 </div>
                                 <div className="modal-footer">
                                   <button
@@ -759,6 +912,7 @@ class Mainbar extends Component {
         }
         {/* <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
         </button> */}
+        {this.state.spinner && <div id="cover-spin"></div>}
       </div >
     );
   }

@@ -230,20 +230,6 @@ class Profile extends Component {
               Following
             </button>
             <button
-              onClick={() => this.changeActive("like")}
-              className=" p-2 px-3 border-right"
-              style={this.props.active === "like" ? colorBlue : {}}
-            >
-              Liked Posts
-            </button>
-            <button
-              onClick={() => this.changeActive("comment")}
-              className=" p-2 px-3 border-right"
-              style={this.props.active === "comment" ? colorBlue : {}}
-            >
-              Commented Posts
-            </button>
-            <button
               onClick={() => this.changeActive("about")}
               className=" p-2 px-3 border-right"
               style={this.props.active === "about" ? colorBlue : {}}
