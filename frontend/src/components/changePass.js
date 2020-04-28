@@ -8,15 +8,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Link as Rlink } from "react-router-dom";
 import axios from "axios";
-import Radio from "@material-ui/core/Radio";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import "./signup.css";
 import { Redirect } from 'react-router-dom'
 const useStyles = makeStyles((theme) => ({
@@ -74,7 +68,7 @@ export default function ChangePassword(props) {
 
     const submitHandler = async () => {
         try {
-            let isExists = await axios.post("http://localhost:3010/users/changepassword", {
+            let isExists = await axios.post("/users/changepassword", {
                 token: props.match.params.id,
                 password
             });

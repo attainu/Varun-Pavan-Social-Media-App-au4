@@ -18,7 +18,7 @@ class LeftBar extends Component {
   componentDidMount() {
     // let data = axios.get('http://localhost:3010/users/5e88f56e7eba1e1c792efb5a');
     let data = axios.get(
-      "http://localhost:3010/users/" + this.props.userId, {
+      "/users/" + this.props.userId, {
       headers: { 'auth-token': localStorage.getItem('token') }
     }
     );

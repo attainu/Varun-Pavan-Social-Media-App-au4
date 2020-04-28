@@ -101,7 +101,7 @@ export default function SignUp() {
         ;
 
     const submitHandler = async () => {
-        let isExists = await axios.post("http://localhost:3010/users/signup/find", {
+        let isExists = await axios.post("/users/signup/find", {
             email,
         });
         updatedAlertText(
@@ -116,7 +116,7 @@ export default function SignUp() {
         let gender = selectedValue;
         let securityAnswer = answer.trim().toLocaleLowerCase()
         let securityQuestion = question
-        await axios.post("http://localhost:3010/users/signup", {
+        await axios.post("/users/signup", {
             name,
             email,
             password,
@@ -125,7 +125,7 @@ export default function SignUp() {
             securityAnswer
         });
         handleClick();
-        setTimeout(() => (window.location.href = "/login"), 7000);
+        setTimeout(() => (window.location.href = "/login"), 2000);
     };
     if (localStorage.getItem('token')) {
         return <Redirect to='/home' />

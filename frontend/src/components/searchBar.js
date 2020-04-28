@@ -18,7 +18,7 @@ class SearchBar extends Component {
     };
 
     componentDidMount = async () => {
-        let user = await axios.get(`http://localhost:3010/users`, {
+        let user = await axios.get(`/users`, {
             headers: { 'auth-token': localStorage.getItem('token') }
         });
         this.setState({ usersList: user.data.data });

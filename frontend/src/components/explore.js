@@ -14,13 +14,13 @@ class Explore extends Component {
         dataReceived: false,
     }
     getAllUsers = async () => {
-        let allUsers = await axios.get('http://localhost:3010/users', {
+        let allUsers = await axios.get('/users', {
             headers: { 'auth-token': localStorage.getItem('token') }
         });
         this.setState({ allUser: allUsers.data.data })
     }
     getAllFollowing = async () => {
-        let allFollowing = await axios.get(`http://localhost:3010/users/following/${localStorage.getItem('userId')}`, {
+        let allFollowing = await axios.get(`/users/following/${localStorage.getItem('userId')}`, {
             headers: { 'auth-token': localStorage.getItem('token') }
         });
         allFollowing = allFollowing.data.data.following.map(user => user._id)
@@ -29,7 +29,7 @@ class Explore extends Component {
 
     getData = () => {
         let data = axios.get(
-            "http://localhost:3010/users/" + localStorage.getItem('userId'), {
+            "/users/" + localStorage.getItem('userId'), {
             headers: { 'auth-token': localStorage.getItem('token') }
         }
         );
@@ -48,7 +48,7 @@ class Explore extends Component {
     }
 
     followHandler = async (id) => {
-        await axios.post(`http://localhost:3010/users/follow/${localStorage.getItem('userId')}/${id}`, {
+        await axios.post(`/users/follow/${localStorage.getItem('userId')}/${id}`, {
             headers: { 'auth-token': localStorage.getItem('token') }
         })
         this.getAllUsers()
@@ -56,7 +56,7 @@ class Explore extends Component {
         this.getData()
     }
     unfollowHandler = async (id) => {
-        await axios.put(`http://localhost:3010/users/unfollow/${localStorage.getItem('userId')}/${id}`, {
+        await axios.put(`/users/unfollow/${localStorage.getItem('userId')}/${id}`, {
             headers: { 'auth-token': localStorage.getItem('token') }
         })
         this.getAllUsers()

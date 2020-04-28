@@ -35,7 +35,7 @@ class Mainbar extends Component {
 
   getPosts = () => {
     let posts = axios.get(
-      `http://localhost:3010/posts/sortedPosts/${this.state.userId}`, {
+      `/posts/sortedPosts/${this.state.userId}`, {
       headers: { 'auth-token': localStorage.getItem('token') }
     }
     );
@@ -49,7 +49,7 @@ class Mainbar extends Component {
   };
 
   getUser = () => {
-    let user = axios.get(`http://localhost:3010/users/${this.state.userId}`, {
+    let user = axios.get(`/users/${this.state.userId}`, {
       headers: { 'auth-token': localStorage.getItem('token') }
     });
     user.then((res) => {
@@ -70,7 +70,7 @@ class Mainbar extends Component {
       postId: id,
       userId: this.state.userId,
     };
-    let like = await axios.put("http://localhost:3010/posts/like", data, {
+    let like = await axios.put("/posts/like", data, {
       headers: { 'auth-token': localStorage.getItem('token') }
     });
     if (like && this.props.updatePosts)
@@ -84,7 +84,7 @@ class Mainbar extends Component {
       postId: id,
       userId: this.state.userId,
     };
-    let like = await axios.put("http://localhost:3010/posts/unlike", data, {
+    let like = await axios.put("/posts/unlike", data, {
       headers: { 'auth-token': localStorage.getItem('token') }
     });
     if (like && this.props.updatePosts)
@@ -102,7 +102,7 @@ class Mainbar extends Component {
       commentId: this.state.editCommentId,
       postComment: this.state.editComment,
     };
-    await axios.put("http://localhost:3010/comments", data, {
+    await axios.put("/comments", data, {
       headers: { 'auth-token': localStorage.getItem('token') }
     });
     this.getPosts();
@@ -115,7 +115,7 @@ class Mainbar extends Component {
       postId: id,
       postComment: this.state.postComment,
     };
-    await axios.post("http://localhost:3010/comments", data, {
+    await axios.post("/comments", data, {
       headers: { 'auth-token': localStorage.getItem('token') }
     });
     this.setState({ postComment: "" });
@@ -130,13 +130,13 @@ class Mainbar extends Component {
       commentId,
       postId,
     };
-    await axios.delete("http://localhost:3010/comments", {
+    await axios.delete("/comments", {
       headers: { 'auth-token': localStorage.getItem('token') }
       , data
     });
     this.getPosts();
     let user = axios.get(
-      "http://localhost:3010/users/" + this.state.userId, {
+      "/users/" + this.state.userId, {
       headers: { 'auth-token': localStorage.getItem('token') }
     }
     );
@@ -173,7 +173,7 @@ class Mainbar extends Component {
         imageUrl = res.data.secure_url;
         console.log(imageUrl);
       }
-      let post = await axios.post(`http://localhost:3010/posts/${this.props.userId}`, {
+      let post = await axios.post(`/posts/${this.props.userId}`, {
         type: "text",
         userId: this.props.userId,
         data: this.state.postText,
@@ -217,7 +217,7 @@ class Mainbar extends Component {
   deletePost = (id) => {
     try {
       console.log(id);
-      let del = axios.delete(`http://localhost:3010/posts/`, {
+      let del = axios.delete(`/posts/`, {
         data: {
           _id: id,
           userId: this.props.userId

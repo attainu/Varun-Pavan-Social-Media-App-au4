@@ -92,7 +92,7 @@ class imageCropper extends Component {
   }
 
   sendData = async () => {
-    await axios.put("http://localhost:3010/users/dp", {
+    await axios.put("/users/dp", {
       profilePic: this.state.croppedImageUrl,
       userId: this.props.userId,
       type: this.props.type

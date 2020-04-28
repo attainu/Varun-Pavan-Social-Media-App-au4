@@ -29,7 +29,7 @@ class Profile extends Component {
 
   getUser = () => {
     axios
-      .get(`http://localhost:3010/users/user?id=${this.props.match.params.id}`, {
+      .get(`/users/user?id=${this.props.match.params.id}`, {
         headers: { 'auth-token': localStorage.getItem('token') }
       })
       .then((res) => {
@@ -40,7 +40,7 @@ class Profile extends Component {
       });
   }
   getAboutData = async () => {
-    let user = await axios.get(`http://localhost:3010/users/${this.props.userId}`, {
+    let user = await axios.get(`/users/${this.props.userId}`, {
       headers: { 'auth-token': localStorage.getItem('token') }
     })
     console.log("cwm", user.data.data)
@@ -52,7 +52,7 @@ class Profile extends Component {
     console.log(this.state.user)
   }
   updateUser = async () => {
-    let data = await axios.post(`http://localhost:3010/users/update`, this.state.user, {
+    let data = await axios.post(`/users/update`, this.state.user, {
       headers: { 'auth-token': localStorage.getItem('token') }
     })
     console.log(data)
@@ -64,7 +64,7 @@ class Profile extends Component {
     try {
       if (prevState.userData === this.state.userData) {
         axios
-          .get("http://localhost:3010/users/user", {
+          .get("/users/user", {
             params: {
               id: this.props.match.params.id,
             },
@@ -119,7 +119,7 @@ class Profile extends Component {
 
   getUpdatePosts = () => {
     axios
-      .get(`http://localhost:3010/users/user?id=${this.props.match.params.id}`, {
+      .get(`/users/user?id=${this.props.match.params.id}`, {
         headers: { 'auth-token': localStorage.getItem('token') }
       })
       .then((res) => {
