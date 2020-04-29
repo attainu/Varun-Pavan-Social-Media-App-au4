@@ -75,7 +75,7 @@ function SignIn(props) {
     };
 
     const submitHandler = async () => {
-        let user = await axios.post("http://localhost:3010/users/login", {
+        let user = await axios.post("/users/login", {
             email,
             password,
         });

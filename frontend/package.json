@@ -49,5 +49,6 @@
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.8.3",
     "@babel/plugin-syntax-export-default-from": "^7.8.3"
-  }
+  },
+  "proxy": "http://localhost:3010"
 }

@@ -95,7 +95,7 @@ export default function SignUp() {
         securityQuestionValudation
         ;
     const emailSubmitHandler = async () => {
-        let find = await axios.post("http://localhost:3010/users/resetemail", { email })
+        let find = await axios.post("/users/resetemail", { email })
         console.log(find.data.data)
         if (find.data.data == true) {
             updatedAlertText("Reset link has been sent to your mail");
@@ -112,7 +112,7 @@ export default function SignUp() {
 
         let securityAnswer = answer.trim().toLocaleLowerCase()
         let securityQuestion = question
-        let isExists = await axios.post("http://localhost:3010/users/reset", {
+        let isExists = await axios.post("/users/reset", {
             email,
             securityQuestion,
             securityAnswer,
@@ -127,7 +127,7 @@ export default function SignUp() {
         if (!isExists.data) {
             return handleClick();
         }
-        // await axios.put("http://localhost:3010/users/reset", {
+        // await axios.put("/users/reset", {
         //     email,
         //     password,
         //     securityQuestion,

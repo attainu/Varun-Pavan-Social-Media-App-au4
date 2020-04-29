@@ -166,7 +166,7 @@ exports.loginUser = catchAsync(async (req, res, next) => {
     });
   } else {
     // return next(new AppError('There is no user with email address.', 404));
-    res.json({ status: false })
+    return res.json({ status: false })
   }
 });
 
