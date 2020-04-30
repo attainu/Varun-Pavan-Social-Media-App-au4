@@ -303,19 +303,21 @@ exports.updateDP = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUser = catchAsync(async (req, res, next) => {
-  // console.log(req.body)
-  let { _id, name, email, phone, gender, location, bio } = req.body;
-  let update = await User.findOne({ _id })
-  update.name = name;
-  update.phone = phone;
-  update.gender = gender;
-  update.location = location;
-  update.bio = bio;
-  let updateSave = await update.save()
+  console.log(req.body.dob)
+  let { _id, name, email, phone, gender, location, bio, dob } = req.body;
+  // let update = await User.findOne({ _id })
+  let update = await User.findOneAndUpdate({ _id }, { name, phone, gender, location, bio, dob })
+  // console.log(update)
+  // update.name = name;
+  // update.phone = phone;
+  // update.gender = gender;
+  // update.location = location;
+  // update.bio = bio;
+  // let updateSave = await update.save()
   // console.log(update)
   res.json({
     status: true,
-    data: updateSave
+    data: update
   })
 
 

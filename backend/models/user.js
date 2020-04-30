@@ -42,8 +42,7 @@ const User = mongoose.model('users', {
     },
     dob: {
         type: Date,
-        default: ""
-
+        default: new Date(2000, 01, 01)
     },
     gender: {
         type: String,
