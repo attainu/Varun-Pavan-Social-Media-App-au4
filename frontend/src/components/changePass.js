@@ -68,7 +68,7 @@ export default function ChangePassword(props) {
 
     const submitHandler = async () => {
         try {
-            let isExists = await axios.post("/users/changepassword", {
+            await axios.post("/users/changepassword", {
                 token: props.match.params.id,
                 password
             });
@@ -76,8 +76,6 @@ export default function ChangePassword(props) {
             newSeverity("success");
             handleClick();
             return setTimeout(() => (window.location.href = "/login"), 2000);
-
-
         } catch (error) {
             updatedAlertText("token expired");
             newSeverity("error");

@@ -7,7 +7,8 @@ let initialState = {
   loggedIn: {},
   viewData: {
     userId: ''
-  }
+  },
+  spinner: false,
 }
 
 function appReducer(state = initialState, action) {
@@ -27,6 +28,14 @@ function appReducer(state = initialState, action) {
 
     case "LOGIN":
       stateCopy.userId = action.payload.data.data._id;
+      return stateCopy;
+
+    case "setSpinner":
+      stateCopy.spinner = action.payload;
+      return stateCopy;
+
+    case "setSpinnerFalse":
+      stateCopy.spinner = action.payload;
       return stateCopy;
 
     default:

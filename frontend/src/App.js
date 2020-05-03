@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Redirect, Switch, Link } from 'react-router-dom'
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
 
 import './App.css';
 import Login from './components/login'
 import SignUp from './components/signup'
 import Home from './components/Home';
 import Navbar from './components/Navbar';
-import Typography from '@material-ui/core/Typography'
 import Profile from './components/Profile';
 import Reset from './components/reset';
 import Explore from './components/explore';

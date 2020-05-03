@@ -6,7 +6,6 @@ import CameraAltIcon from "@material-ui/icons/CameraAlt";
 import ImageCropper from './imageCropper';
 import "./Profile.css";
 import Mainbar from "./Mainbar";
-import LeftProfileBar from "./LeftProfileBar";
 import { Redirect } from 'react-router-dom'
 import EditIcon from '@material-ui/icons/Edit';
 import moment from 'moment'
@@ -183,7 +182,9 @@ class Profile extends Component {
             <div id="u-name">{this.state.userData.name}</div>
 
             {id === this.props.userId && (
-              <div id="edit-profile">
+              <div
+                id="edit-profile"
+              >
                 <input
                   className="d-none"
                   ref={(input) => (this.inputElement = input)}
@@ -244,15 +245,7 @@ class Profile extends Component {
         {/* <Mainbar /> */}
         <div style={{ display: "flex", justifyContent: "space-around" }}>
           {/* <LeftProfileBar /> */}
-          <div className="card mx-3 mt-5" style={{ width: "25vw", height: "auto" }}>
-            <div className="card-body">
-              <h5 className="card-title">Bio</h5>
-              <p className="card-text">
-                {this.state.user.bio ? this.state.user.bio : '"Write a bio..!"'}
-              </p>
-              {/* <a href="#" class="btn btn-primary">Go somewhere</a> */}
-            </div>
-          </div>
+
           {this.props.active === "posts" && <Mainbar posts={posts} updatePosts={this.getUpdatePosts} />}
           {this.props.active === "following" && (
             <div
@@ -384,7 +377,8 @@ class Profile extends Component {
                     </div>
                   </div>
                 </div>
-              </div></>
+              </div>
+            </>
           )}
 
         </div>

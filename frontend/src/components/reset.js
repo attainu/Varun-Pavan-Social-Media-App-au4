@@ -97,7 +97,7 @@ export default function SignUp() {
     const emailSubmitHandler = async () => {
         let find = await axios.post("/users/resetemail", { email })
         console.log(find.data.data)
-        if (find.data.data == true) {
+        if (find.data.data === true) {
             updatedAlertText("Reset link has been sent to your mail");
             newSeverity("success");
             return handleClick();
