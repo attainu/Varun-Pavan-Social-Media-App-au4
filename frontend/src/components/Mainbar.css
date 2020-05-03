@@ -60,3 +60,7 @@
   -webkit-animation: spin 0.8s linear infinite;
   animation: spin 0.8s linear infinite;
 }
+.modal .modal-header .modal-body{
+  padding: auto;
+  margin: auto;
+}

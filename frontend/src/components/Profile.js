@@ -9,7 +9,7 @@ import Mainbar from "./Mainbar";
 import LeftProfileBar from "./LeftProfileBar";
 import { Redirect } from 'react-router-dom'
 import EditIcon from '@material-ui/icons/Edit';
-
+import moment from 'moment'
 
 class Profile extends Component {
   state = {
@@ -40,7 +40,7 @@ class Profile extends Component {
       });
   }
   getAboutData = async () => {
-    let user = await axios.get(`/users/${this.props.userId}`, {
+    let user = await axios.get(`/users/${this.props.match.params.id}`, {
       headers: { 'auth-token': localStorage.getItem('token') }
     })
     console.log("cwm", user.data.data)
@@ -230,7 +230,10 @@ class Profile extends Component {
               Following
             </button>
             <button
-              onClick={() => this.changeActive("about")}
+              onClick={() => {
+                this.changeActive("about")
+                this.getAboutData()
+              }}
               className=" p-2 px-3 border-right"
               style={this.props.active === "about" ? colorBlue : {}}
             >
@@ -263,7 +266,7 @@ class Profile extends Component {
               {this.props.active === "following" &&
                 this.state.userData.following &&
                 this.state.userData.following.map((data) => (
-                  this.props.userId !== data._id && <div
+                  this.props.match.params.id !== data._id && <div
                     className="mx-2 mt-3"
                     style={{ display: "flex", alignItems: "baseline" }}
                   >
@@ -296,7 +299,7 @@ class Profile extends Component {
               {this.props.active === "followers" &&
                 this.state.userData.followers &&
                 this.state.userData.followers.map((data) => (
-                  this.props.userId !== data._id && <div style={{ display: "flex", alignItems: "baseline" }}>
+                  this.props.match.params.id !== data._id && <div style={{ display: "flex", alignItems: "baseline" }}>
                     <img
                       alt="Profile"
                       src={data.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"}
@@ -323,7 +326,7 @@ class Profile extends Component {
                 </tr>
                 <tr><td className="font-weight-bold">Phone</td><td> {this.state.user.phone || "00000"}</td></tr>
                 <tr><td className="font-weight-bold">Location</td><td className="text-capitalize">{this.state.user.location || "India"}</td></tr>
-                <tr><td className="font-weight-bold">DOB </td><td>{this.state.user.dob || "01 / 01 / 2000"}</td></tr>
+                <tr><td className="font-weight-bold">DOB </td><td>{moment(this.state.user.dob).format("DD-MM-YYYY") || "01 / 01 / 2000"}</td></tr>
                 <tr><td className="font-weight-bold">Gender</td><td className="text-capitalize">{this.state.user.gender || "__"}</td></tr>
               </tbody>
               {this.props.match.params.id === this.props.userId && <EditIcon data-toggle="modal" data-target="#exampleModal" title="Edit profile" />
