@@ -24,8 +24,8 @@ const User = mongoose.model('users', {
     },
     phone: {
         type: Number,
-        min: [999999999, 'Please provide a valid Mobile Number'],
-        max: [10000000000]
+        // min: [999999999, 'Please provide a valid Mobile Number'],
+        // max: [10000000000]
     },
     password: {
         type: String,
