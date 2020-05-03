@@ -113,7 +113,7 @@ exports.sortedPosts = catchAsync(async (req, res, next) => {
       select: 'posts',
       populate: {
         path: 'posts',
-        select: 'data image userId dateCreated liked commentsId',
+        select: 'data image userId createdAt liked commentsId',
         options: {
           limit: 10
         },
@@ -131,7 +131,7 @@ exports.sortedPosts = catchAsync(async (req, res, next) => {
   posts = posts.following.reduce((acc, data) => [...acc, data.posts], []);
   // posts = [].concat(...posts, ...userPosts.posts);
   posts = [].concat(...posts);
-  posts.sort((posts1, posts2) => { return posts1.dateCreated > posts2.dateCreated ? -1 : 1 });
+  posts.sort((posts1, posts2) => { return posts1.createdAt > posts2.createdAt ? -1 : 1 });
   res.status(201).json({
     data: posts
   })
