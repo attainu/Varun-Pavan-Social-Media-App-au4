@@ -31,7 +31,6 @@ class Mainbar extends Component {
     postText: "",
     postImage: "",
     imagePreviewUrl: "",
-    spinner: false,
     updatePostText: "",
     updatePostImagee: "",
     updateImagePreviewUrl: "",
@@ -46,7 +45,7 @@ class Mainbar extends Component {
     );
     posts.then((res) => {
       this.setState({
-        posts: res.data.data,
+        posts: res.data.data
       });
     });
   };
@@ -108,6 +107,8 @@ class Mainbar extends Component {
     await axios.put("/comments", data, {
       headers: { 'auth-token': localStorage.getItem('token') }
     });
+    if (this.props.updatePosts)
+      this.props.updatePosts()
     this.getPosts();
     this.setState({ editComment: "", editCommentId: "" });
   };
@@ -121,6 +122,8 @@ class Mainbar extends Component {
     await axios.post("/comments", data, {
       headers: { 'auth-token': localStorage.getItem('token') }
     });
+    if (this.props.updatePosts)
+      this.props.updatePosts()
     this.setState({ postComment: "" });
     this.getPosts();
     document.getElementById(idx).value = "";
@@ -137,6 +140,8 @@ class Mainbar extends Component {
       headers: { 'auth-token': localStorage.getItem('token') }
       , data
     });
+    if (this.props.updatePosts)
+      this.props.updatePosts()
     this.getPosts();
     let user = axios.get(
       "/users/" + this.state.userId, {
@@ -165,6 +170,10 @@ class Mainbar extends Component {
   }
 
   uploadPost = async () => {
+    this.props.dispatch({
+      type: "setSpinner",
+      payload: true
+    })
     try {
       let res;
       let imageUrl = "";
@@ -176,14 +185,16 @@ class Mainbar extends Component {
         imageUrl = res.data.secure_url;
         console.log(imageUrl);
       }
-      let post = await axios.post(`/posts/${this.props.userId}`, {
+      await axios.post(`/posts/${this.props.userId}`, {
         type: "text",
         userId: this.props.userId,
         data: this.state.postText,
         image: imageUrl ? imageUrl : ""
       }, {
         headers: { 'auth-token': localStorage.getItem('token') }
-      })
+      });
+      if (this.props.updatePosts)
+        this.props.updatePosts()
       this.getPosts();
       this.setState({
         postText: "",
@@ -192,6 +203,10 @@ class Mainbar extends Component {
     } catch (error) {
 
     }
+    this.props.dispatch({
+      type: "setSpinnerFalse",
+      payload: false
+    })
   }
 
   handlePostTextData = (value) => {
@@ -200,8 +215,12 @@ class Mainbar extends Component {
     });
   }
 
-  chooseFile(type) {
+  chooseFile() {
     this.inputElement.click();
+  }
+
+  updateImage = () => {
+    this.inputPost.click();
   }
 
   onSelectFile = e => {
@@ -232,7 +251,10 @@ class Mainbar extends Component {
   }
 
   updatePost = async (id, idx) => {
-    console.log(id, idx);
+    this.props.dispatch({
+      type: "setSpinner",
+      payload: true
+    })
     try {
       let res;
       let imageUrl = "";
@@ -252,6 +274,8 @@ class Mainbar extends Component {
       }, {
         headers: { 'auth-token': localStorage.getItem('token') }
       })
+      if (this.props.updatePosts)
+        this.props.updatePosts()
       this.getPosts();
       this.setState({
         updatePostText: "",
@@ -260,6 +284,10 @@ class Mainbar extends Component {
     } catch (error) {
 
     }
+    this.props.dispatch({
+      type: "setSpinnerFalse",
+      payload: false
+    })
   }
 
   deletePost = (id) => {
@@ -271,7 +299,12 @@ class Mainbar extends Component {
           userId: this.props.userId
         }
       });
-      del.then(res => this.getPosts())
+      del.then(res => {
+        if (this.props.updatePosts)
+          this.props.updatePosts()
+        this.getPosts()
+      })
+
     } catch (error) {
 
     }
@@ -294,7 +327,7 @@ class Mainbar extends Component {
 
   render() {
     console.log(this.props);
-    let commentAuth = this.state.postComment.trim().length < 1;
+    // let commentAuth = this.state.postComment.trim().length < 1;
     let editCommentAuth = this.state.editComment.trim().length < 1;
     console.log(this.props);
     let posts, viewUser = this.props.match.params.id === this.props.userId || this.props.match.path === '/home';
@@ -302,8 +335,7 @@ class Mainbar extends Component {
     else posts = this.state.posts;
     return (
       <div
-        className="pt-5 px-2 px-md-0 mx-md-auto mx-lg-auto posts"
-        style={{ width: "50vw", overflowY: "scroll", height: "95vh" }}
+        className="pt-5 px-2 px-md-0 mx-md-auto mx-lg-auto mainbar"
       >
         {viewUser && (
           <div className="form-group">
@@ -334,7 +366,7 @@ class Mainbar extends Component {
                     display: "inline-block",
                     position: "relative",
                   }}>
-                  <img src={this.state.imagePreviewUrl} style={{ width: "200px" }} className="img-fluid" alt="Uploaded Image" />
+                  <img src={this.state.imagePreviewUrl} style={{ width: "200px" }} className="img-fluid" alt="Uploaded" />
                   <img
                     src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_close_48px-512.png"
                     onClick={() => this.removePostImage()}
@@ -347,6 +379,7 @@ class Mainbar extends Component {
                       background: "25%",
                       backgroundColor: "grey",
                     }}
+                    alt="post"
                   />
                 </div>
               )}
@@ -395,7 +428,7 @@ class Mainbar extends Component {
                   <div style={{ display: "flex" }}>
                     <img
                       className="rounded-circle m-2"
-                      src="http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"
+                      src={data.userId.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"}
                       style={{
                         width: "3rem",
                       }}
@@ -405,7 +438,7 @@ class Mainbar extends Component {
                       <h6 className="mb-0"><Link to={`/${data.userId._id}`}>{data.userId.name}</Link></h6>
                       <p className="mb-0" style={{ fontSize: "0.8rem" }}>
                         {moment
-                          .utc(data.dateCreated)
+                          .utc(data.createdAt)
                           .local()
                           .format("DD MMMM YYYY HH:mm")}
                       </p>
@@ -459,7 +492,7 @@ class Mainbar extends Component {
                               src={this.state.updateImagePreviewUrl}
                               style={{ width: "200px" }}
                               className="img-fluid"
-                              alt="Uploaded Updated Post Image" />
+                              alt="Uploaded Updated Post Img" />
                             <img
                               src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_close_48px-512.png"
                               onClick={() => this.removeUpdatePostImage()}
@@ -472,10 +505,17 @@ class Mainbar extends Component {
                                 background: "25%",
                                 backgroundColor: "grey",
                               }}
+                              alt="remove"
                             />
                           </div>
                         )}
+                        <button
+                          class="btn btn-primary"
+                          onClick={() => this.updateImage()}
+                        >Choose File</button>
                         <input
+                          value={""}
+                          ref={(input) => (this.inputPost = input)}
                           onChange={(e) => this.onUpdateSelectFile(e)}
                           accept="image/*"
                           type="file" />
@@ -494,7 +534,7 @@ class Mainbar extends Component {
                   </div>
                 </div>
                 {data.data.length <= 180 ? <h4 className="p-2">{data.data}</h4> : <h6 className="p-1 pl-2">{data.data}</h6>}
-                {data.image && <img src={data.image} />}
+                {data.image && <img src={data.image} alt="imgg" />}
                 <p className=""
                   style={{
                     display: "flex",
@@ -579,86 +619,8 @@ class Mainbar extends Component {
                 <div>
                   {data.commentsId.length > 0 &&
                     data.commentsId.map((comment, cidx) => {
-                      // if (data._id === this.state.opened)
                       return (
                         comment.userId && <div key={cidx} className="m-1">
-                          {/* <div style={{ border: "1px #dee2e6 solid" }}>
-                            <div
-                              className="border-bottom"
-                              style={{
-                                display: "flex",
-                                alignContent: "center",
-                              }}
-                            >
-                              <img
-                                className="rounded-circle m-2"
-                                src={`${comment.userId.profilePic || "http://getdrawings.com/img/facebook-profile-picture-silhouette-female-3.jpg"}`}
-                                style={{ width: "3rem" }}
-                                alt="Profile"
-                              ></img>
-                              <div
-                                className="pl-2"
-                                style={{ alignSelf: "center" }}
-                              >
-                                <h6 className="mb-0">
-                                  <Link
-                                    to={`/${comment.userId._id}`}
-                                    style={{ textDecoration: "none" }}
-                                  >
-                                    {comment.userId.name}
-                                  </Link>
-                                </h6>
-                                <p
-                                  className="mb-0"
-                                  style={{ fontSize: "0.8rem" }}
-                                >
-                                  {moment(comment.commentCreated).format(
-                                    "DD MMMM YYYY HH:mm"
-                                  )}
-                                </p>
-                                <br />
-                              </div>
-                              <hr />
-                              {comment.userId._id === this.state.userId && (
-                                <button
-                                  title="Edit"
-                                  className="btn"
-                                  data-toggle="modal"
-                                  data-target="#exampleModalCenter"
-                                  onClick={() => {
-                                    this.setState({
-                                      editComment: comment.comment,
-                                      editCommentId: comment._id
-                                    })
-                                  }
-                                  }
-                                >
-                                  <EditIcon />
-                                </button>
-                              )}
-                              {(comment.userId._id === this.state.userId ||
-                                this.state.postsByUser.includes(data._id)) && (
-                                  <button
-                                    title="Delete"
-                                    className="btn"
-                                    onClick={() =>
-                                      this.deleteHandler(comment._id, data._id)
-                                    }
-                                  >
-                                    <DeleteIcon />
-                                  </button>
-                                )}
-                            </div>
-                            <div
-                              className="container"
-                              style={{
-                                display: "flex",
-                                justifyContent: "start",
-                              }}
-                            >
-                              <p>{comment.comment}</p>
-                            </div>
-                          </div>*/}
                           <div style={{
                             display: "flex",
                             alignItems: "flex-start"
@@ -694,7 +656,7 @@ class Mainbar extends Component {
                                 {comment.comment}
                               </p>
                             </div>
-                            <div style={{ alignSelf: "center" }}>
+                            <div className="icons">
                               {comment.userId._id === this.state.userId && (
                                 <button
                                   title="Edit"
@@ -912,7 +874,7 @@ class Mainbar extends Component {
         }
         {/* <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
         </button> */}
-        {this.state.spinner && <div id="cover-spin"></div>}
+        {this.props.spinner && <div id="cover-spin"></div>}
       </div >
     );
   }
@@ -920,6 +882,7 @@ class Mainbar extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    spinner: state.app.spinner,
     userId: state.app.userId,
   };
 };

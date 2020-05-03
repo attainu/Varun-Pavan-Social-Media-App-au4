@@ -393,7 +393,6 @@ exports.changePassword = catchAsync(async (req, res, next) => {
     let user = await User.findOne({ _id: verified._id })
     user.password = hashPassword;
     await user.save()
-    console.log(user)
     return res.json({
       data: true
     })
