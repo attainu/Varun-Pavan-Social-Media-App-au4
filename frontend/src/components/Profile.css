@@ -1,3 +1,16 @@
+@media screen and (max-width: 575px) {
+ #following {
+  display: flex !important;
+  flex-direction: column !important;
+  margin-bottom: 40px;
+  justify-content: center;
+  align-items: center;
+ }
+ #followers{
+  display: flex !important;
+  flex-direction: column !important;
+ }
+}
 * {
   outline: none;
 }

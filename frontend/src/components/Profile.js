@@ -206,7 +206,7 @@ class Profile extends Component {
         </div>
         <div
           className="mx-auto border-bottom"
-          style={{ display: "flex", justifyContent: "space-around" }}
+          style={{ display: "flex", justifyContent: "space-around", marginTop: "40px", marginBottom: "30px" }}
         >
           <div>
             <button
@@ -249,6 +249,7 @@ class Profile extends Component {
           {this.props.active === "posts" && <Mainbar posts={posts} updatePosts={this.getUpdatePosts} />}
           {this.props.active === "following" && (
             <div
+              id="following"
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
@@ -282,6 +283,7 @@ class Profile extends Component {
           )}
           {this.props.active === "followers" && (
             <div
+              id="followers"
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
