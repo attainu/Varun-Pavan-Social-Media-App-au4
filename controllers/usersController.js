@@ -361,7 +361,7 @@ exports.resetViaMail = catchAsync(async (req, res, next) => {
       html: `<div>
       <b>Hello, ${email}</b>
       <p>click on the link to reset your password</p>
-      <p>http://localhost:3000/resetpassword/${token}</p>
+      <p>resetpassword/${token}</p>
       <p>Link will expire in 15 minutes</p>
       <div>` // html body
     });
