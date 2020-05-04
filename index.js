@@ -4,10 +4,11 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 // const xss = require('xss-clean');
 const cors = require('cors');
+const path = require('path');
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require('./controllers/errorController');
-const port = 3010;
+const port = process.env.PORT || 3010;
 
 app.use(cors())
 // Set security HTTP headers
@@ -42,6 +43,17 @@ app.all('*', (req, res, next) => {
 });
 
 app.use(globalErrorHandler);
+
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+    // Set static folder
+    app.use(express.static('frontend/build'));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+    });
+}
+
 
 app.listen(port, () => {
     console.log(`Server started at ${port}`)
