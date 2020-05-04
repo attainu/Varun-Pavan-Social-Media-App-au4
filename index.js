@@ -38,12 +38,6 @@ app.get('/', (req, res) => {
     })
 });
 
-app.all('*', (req, res, next) => {
-    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
-});
-
-app.use(globalErrorHandler);
-
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
     // Set static folder
@@ -53,6 +47,12 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
     });
 }
+
+app.all('*', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+app.use(globalErrorHandler);
 
 
 app.listen(port, () => {

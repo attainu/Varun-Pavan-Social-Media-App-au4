@@ -265,7 +265,7 @@ class Mainbar extends Component {
         res = await axios.post(url, formData);
         imageUrl = res.data.secure_url;
       }
-      await axios.put(`http://localhost:3010/posts/update`, {
+      await axios.put(`/posts/update`, {
         type: "text",
         postId: this.state.editPostId,
         userId: this.props.userId,
