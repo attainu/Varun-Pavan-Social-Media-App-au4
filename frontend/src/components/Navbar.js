@@ -14,7 +14,7 @@ class Navbar extends Component {
       <header style={{ borderBottom: "1px solid black" }}>
         <nav className="navbar navbar-expand-sm navbar-dark justify-content-end" style={{ backgroundColor: "#e0e0e0" }}>
 
-          <Link className="navbar-brand mr-auto logo" to="/signup" title="Home" >Social Media</Link>
+          <Link className="navbar-brand mr-auto logo pl-2 pr-2" to="/signup" title="Home" >Social</Link>
 
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
             <span className="navbar-toggler-icon bg-dark"></span>

@@ -342,8 +342,8 @@ exports.resetViaMail = catchAsync(async (req, res, next) => {
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
-        user: 'msocial190@gmail.com', // generated ethereal user
-        pass: 'varunpavan190' // generated ethereal password
+        user: `${process.env.EMAIL}`, // generated ethereal user
+        pass: `${process.env.PASSWORD}`  // generated ethereal password
       },
       tls: {
         rejectUnauthorized: false
@@ -352,7 +352,7 @@ exports.resetViaMail = catchAsync(async (req, res, next) => {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-      from: 'msocial190@gmail.com', // sender address
+      from: `${process.env.EMAIL}`, // sender address
       to: `${email}`, // list of receivers
       subject: "Password reset request", // Subject line
       text: "Hello", // plain text body
