@@ -109,7 +109,9 @@ class imageCropper extends Component {
         </div>
         {src && (
           <div className="overlay">
-            <div className="close-icon">
+            <div
+              style={{ marginTop: "40px" }}
+              className="close-icon">
               <IoIosCloseCircleOutline
                 onClick={() => this.cancelDP()}
                 size="large"

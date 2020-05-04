@@ -32,11 +32,11 @@ app.use("/users", require("./routes/user"));
 app.use("/posts", require("./routes/post"));
 app.use("/comments", auth, require("./routes/comment"));
 
-app.get('/', (req, res) => {
-    res.json({
-        data: req.body
-    })
-});
+// app.get('/', (req, res) => {
+//     res.json({
+//         data: req.body
+//     })
+// });
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

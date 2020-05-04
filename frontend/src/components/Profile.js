@@ -32,7 +32,7 @@ class Profile extends Component {
         headers: { 'auth-token': localStorage.getItem('token') }
       })
       .then((res) => {
-        console.log(res, "data");
+        // console.log(res, "data");
         this.setState({
           userData: res.data.data.user,
         });
@@ -42,19 +42,16 @@ class Profile extends Component {
     let user = await axios.get(`/users/${this.props.match.params.id}`, {
       headers: { 'auth-token': localStorage.getItem('token') }
     })
-    console.log("cwm", user.data.data)
     this.setState({ user: user.data.data, tempUser: user.data.data })
   }
   componentDidMount() {
     this.getUser();
     this.getAboutData()
-    console.log(this.state.user)
   }
   updateUser = async () => {
     let data = await axios.post(`/users/update`, this.state.user, {
       headers: { 'auth-token': localStorage.getItem('token') }
     })
-    console.log(data)
     this.getUser();
     this.getAboutData()
   }
@@ -83,6 +80,7 @@ class Profile extends Component {
 
   chooseFile(type) {
     this.inputElement.click();
+    // console.log("Yoooo");
     this.setState({
       imageType: type
     })
@@ -110,9 +108,9 @@ class Profile extends Component {
 
   setImageCropper = () => {
     this.setState({
-      imageCropper: false
+      imageCropper: false,
+      src: ""
     });
-    console.log("update");
     this.getUser();
   }
 
@@ -191,6 +189,7 @@ class Profile extends Component {
                   type="file"
                   accept="image/*"
                   onChange={this.onSelectFile}
+                  onClick={(e) => e.target.value = null}
                 />
                 <button
                   onClick={() => this.chooseFile('cp')}
@@ -206,7 +205,7 @@ class Profile extends Component {
         </div>
         <div
           className="mx-auto border-bottom"
-          style={{ display: "flex", justifyContent: "space-around", marginTop: "40px", marginBottom: "30px" }}
+          style={{ display: "flex", justifyContent: "space-around" }}
         >
           <div>
             <button
@@ -371,8 +370,7 @@ class Profile extends Component {
                         <option>Male</option>
                         <option>Female</option>
                       </select>
-                                ...
-      </div>
+                    </div>
                     <div className="modal-footer">
                       <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => this.setState({ user: this.state.tempUser })}>Close</button>
                       <button type="button" className="btn btn-primary" onClick={() => this.updateUser()} data-dismiss="modal">Update</button>

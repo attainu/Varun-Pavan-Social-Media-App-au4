@@ -37,7 +37,6 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 
 exports.updatePostImage = catchAsync(async (req, res, next) => {
   let { postId, data, image } = req.body;
-  console.log(await Post.findOne({ _id: postId }))
   let post = await Post.updateOne({ _id: postId }, { $set: { data, image } });
   res.status(201).json({
     status: 'success',
@@ -50,9 +49,7 @@ exports.updatePostImage = catchAsync(async (req, res, next) => {
 exports.deletePost = catchAsync(async (req, res, next) => {
   let { _id, userId } = req.body;
   let user = await User.findOne({ _id: userId });
-  console.log(user.posts)
   user.posts.splice(user.posts.indexOf(_id), 1);
-  console.log(user.posts)
   user.save();
   let post = await Post.deleteOne({ _id });
   let comment = await Comment.deleteMany({ postId: _id })
@@ -73,7 +70,6 @@ exports.deletePost = catchAsync(async (req, res, next) => {
 /**
  * exports.sortedPosts = catchAsync(async (req, res, next) => {
   let { id } = req.params;
-  console.log(new Date())
   let posts = await User.findOne({ _id: id })
     .populate({
       path: 'following',
@@ -106,7 +102,6 @@ exports.deletePost = catchAsync(async (req, res, next) => {
 
 exports.sortedPosts = catchAsync(async (req, res, next) => {
   let { id } = req.params;
-  // console.log(new Date())
   let posts = await User.findOne({ _id: id })
     .populate({
       path: 'following',

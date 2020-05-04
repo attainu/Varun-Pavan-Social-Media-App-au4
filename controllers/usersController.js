@@ -273,7 +273,6 @@ function imageUpload(imgname, req, res) {
 
   cloudinary.uploader.upload(`${__dirname}/../public/images/${imgname}`, function (error, response) {
     let { userId, type } = req.body;
-    console.log(response, userId);
     let user;
     if (type === 'cp')
       user = User.updateOne({ _id: userId }, { $set: { coverPic: response.secure_url } });
@@ -303,7 +302,6 @@ exports.updateDP = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUser = catchAsync(async (req, res, next) => {
-  console.log(req.body.dob)
   let { _id, name, email, phone, gender, location, bio, dob } = req.body;
   // let update = await User.findOne({ _id })
   let update = await User.findOneAndUpdate({ _id }, { name, phone, gender, location, bio, dob })
@@ -361,16 +359,16 @@ exports.resetViaMail = catchAsync(async (req, res, next) => {
       html: `<div>
       <b>Hello, ${email}</b>
       <p>click on the link to reset your password</p>
-      <p>resetpassword/${token}</p>
+      <p>${window.location.host}/resetpassword/${token}</p>
       <p>Link will expire in 15 minutes</p>
       <div>` // html body
     });
 
-    console.log("Message sent: %s", info.messageId);
+    // console.log("Message sent: %s", info.messageId);
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
     // Preview only available when sending through an Ethereal account
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     // }
     // console.log(send)
     // send()
@@ -385,7 +383,6 @@ exports.resetViaMail = catchAsync(async (req, res, next) => {
 
 exports.changePassword = catchAsync(async (req, res, next) => {
   let { token, password } = req.body;
-  console.log(token)
   const verified = jwt.verify(token, 'secretkey');
   if (verified) {
     let salt = await bcryptjs.genSalt(10);

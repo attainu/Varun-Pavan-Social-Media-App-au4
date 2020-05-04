@@ -22,7 +22,6 @@ class Mainbar extends Component {
     postComment: "",
     editComment: "",
     editCommentId: '',
-    // userId: "5e88f56e7eba1e1c792efb5a",
     opened: "",
     userId: this.props.userId,
     title: "",
@@ -183,7 +182,6 @@ class Mainbar extends Component {
         formData.append('upload_preset', preset);
         res = await axios.post(url, formData);
         imageUrl = res.data.secure_url;
-        console.log(imageUrl);
       }
       await axios.post(`/posts/${this.props.userId}`, {
         type: "text",
@@ -292,7 +290,6 @@ class Mainbar extends Component {
 
   deletePost = (id) => {
     try {
-      console.log(id);
       let del = axios.delete(`/posts/`, {
         data: {
           _id: id,
@@ -326,10 +323,8 @@ class Mainbar extends Component {
 
 
   render() {
-    console.log(this.props);
     // let commentAuth = this.state.postComment.trim().length < 1;
     let editCommentAuth = this.state.editComment.trim().length < 1;
-    console.log(this.props);
     let posts, viewUser = this.props.match.params.id === this.props.userId || this.props.match.path === '/home';
     if (this.props.posts) posts = this.props.posts;
     else posts = this.state.posts;
@@ -406,13 +401,14 @@ class Mainbar extends Component {
               type="file"
               accept="image/*"
               onChange={this.onSelectFile}
+              onClick={(e) => e.target.value = null}
             />
           </div>
         )}
         {!posts.length ?
-          <h5 className="text-center font-weight-bold text-secondary"> "Create post or follow a friend..!" </h5 > :
+          this.props.match.params.id === this.props.userId ? <h5 className="text-center font-weight-bold text-secondary"> "Create post or follow a friend..!" </h5 > :
+            <h5 className="text-center font-weight-bold text-secondary"> "No Posts by the User" </h5 > :
           posts.map((data, idx) => {
-            console.log(data._id);
             return (
               <div key={idx}
                 className="mb-3"
@@ -517,6 +513,7 @@ class Mainbar extends Component {
                           value={""}
                           ref={(input) => (this.inputPost = input)}
                           onChange={(e) => this.onUpdateSelectFile(e)}
+                          onClick={(e) => e.target.value = null}
                           accept="image/*"
                           type="file" />
                       </div>
@@ -674,7 +671,7 @@ class Mainbar extends Component {
                                   <EditIcon />
                                 </button>
                               )}
-                              {(comment.userId._id === this.state.userId ||
+                              {(comment.userId._id === this.state.userId &&
                                 this.state.postsByUser.includes(data._id)) && (
                                   <button
                                     title="Delete"
@@ -850,7 +847,6 @@ class Mainbar extends Component {
                       this.setState({ postComment: e.target.value })
                     }}
                     onKeyDown={(e) => {
-                      console.log(e.keyCode)
                       if (e.keyCode === 13)
                         this.commentHandler(data._id, idx)
                     }}

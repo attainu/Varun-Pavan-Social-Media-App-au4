@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ChangePassword(props) {
-    console.log(props.match.params.id)
     const classes = useStyles();
     const [password, newPassword] = useState("");
     const [cpassword, cnewPassword] = useState("");
@@ -64,7 +63,6 @@ export default function ChangePassword(props) {
     let disable =
         !passwordValidation &&
         cpasswordValidation;
-    console.log()
 
     const submitHandler = async () => {
         try {

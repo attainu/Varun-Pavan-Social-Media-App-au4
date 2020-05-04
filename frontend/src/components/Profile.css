@@ -1,4 +1,4 @@
-@media screen and (max-width: 575px) {
+/* @media screen and (max-width: 575px) {
  #following {
   display: flex !important;
   flex-direction: column !important;
@@ -10,7 +10,7 @@
   display: flex !important;
   flex-direction: column !important;
  }
-}
+} */
 * {
   outline: none;
 }

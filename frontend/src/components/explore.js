@@ -34,7 +34,6 @@ class Explore extends Component {
         }
         );
         data.then((res) => {
-            console.log(res)
             this.setState({
                 data: res.data.data,
                 dataReceived: true,
