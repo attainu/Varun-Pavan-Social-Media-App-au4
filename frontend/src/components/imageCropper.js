@@ -92,13 +92,23 @@ class imageCropper extends Component {
   }
 
   sendData = async () => {
+    this.props.dispatch({
+      type: "setSpinner",
+      payload: true
+    })
     await axios.put("/users/dp", {
       profilePic: this.state.croppedImageUrl,
       userId: this.props.userId,
       type: this.props.type
     }, {
       headers: { 'auth-token': localStorage.getItem('token') }
-    }).then(() => this.props.showImage());
+    }).then(() => {
+      this.props.showImage()
+      this.props.dispatch({
+        type: "setSpinnerFalse",
+        payload: false
+      })
+    });
   }
 
   render() {
@@ -119,7 +129,8 @@ class imageCropper extends Component {
             </div>
             <div className="overlay-content">
               <div>
-                <h1 style={{ color: "white" }}>Create your profile picture</h1>
+                {this.props.type === 'cp' ? <h1 style={{ color: "white" }}>Create your Cover picture</h1> :
+                  <h1 style={{ color: "white" }}>Create your profile picture</h1>}
                 <ReactCrop
                   src={src}
                   crop={crop}
@@ -131,7 +142,8 @@ class imageCropper extends Component {
                 />
               </div>
               <div>
-                <h1 style={{ color: "white" }}>DP Preview</h1>
+                {this.props.type === 'cp' ? <h1 style={{ color: "white" }}>CP Preview</h1> :
+                  <h1 style={{ color: "white" }}>DP Preview</h1>}
                 {croppedImageUrl && (
                   <>
                     <img
